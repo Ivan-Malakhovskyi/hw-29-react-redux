@@ -1,4 +1,4 @@
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { deposit, withdraw } from "./redux/accountReducer";
 import { useState } from "react";
 import { Balance } from "./Balance";
