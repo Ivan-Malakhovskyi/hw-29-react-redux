@@ -1,201 +1,114 @@
-1. Delete old => install new packages
+1. npm i redux-persist
 
-2. export const store = configureStore({
-   reducer: rootReducer,
-   });
+import {
+persistStore,
+persistReducer,
+FLUSH,
+REHYDRATE,
+PAUSE,
+PERSIST,
+PURGE,
+REGISTER,
+} from 'redux-persist'
 
-//! Автоматично викличе combineReducers() всередині
+import { configureStore } from "@reduxjs/toolkit";
+import { persistStore, persistReducer } from "redux-persist";
+import { accountReducer } from "./accountSlice";
+import { localeReducer } from "./localeSlice";
+import storage from "redux-persist/es/storage";
+
+middleware - функція(проміжний обробник) яка стоїть, між відправкою екшена і доставкою його в редюсер
+
+const persistConfig = {
+key: "root",
+storage,
+};
+
+const persistedLocaleReducer = persistReducer(persistConfig, localeReducer);
+
 export const store = configureStore({
 reducer: {
 account: accountReducer,
-locale: localeReducer,
+locale: persistedLocaleReducer,
 },
 });
 
-RENAME FILES
+export const persistor = persistStore(store);
 
-FROM accountReducer => accountSlice
+main.jsx
 
-3. Actions
-   export const deposit = createAction("account/deposit")
-   console.dir(deposit) - Function
-   console.log(deposit(10)) - return object;
+import { PersistGate } from "redux-persist/integration/react";
 
-4. Reducers
+<PersistGate loading={<div>Loading ...</div>} persistor={persistor}>
+<App />
+</PersistGate>
 
-const accountReducer1 = createReducer({ balance: 0 }, {});
+REdux-persist починає слідкувати за стейтом за який відповідає редюсер
 
-Сказати, що краще використовувати функцію, а не об'єкт
+persistedLocaleReducer() - воно знає, що там є стейт початквий і бере даний стейт і зберігає в localStorage
+Якщо початкове в localStorage було 10 воно візьме прочитає з localStorage І буде 10, при перезавантаженні сторінки
+
+BLACKLIST & WHITELIST
+
+1. зберегти все крім чогось blacklist: ["c"] - все крім c
 
 {
-[addTask]: (state, action) => {
-return [...state, action.payload];
-},
-} - бо це deprecated
+a:5,
+b: 10,
+c: 15
+}
 
-А функцію
+2. тільки щось з переліку whitelist: ["c"] -тільки це
 
-builder - object, який сам викличеться
+initialState: { lang: "uk", a: 1, b: 2, c: 3 },
 
-addCase() - додати випадок
+whitelist: ["lang"],
 
-(builder) => builder.addCase()
+blacklist: ["lang"],
 
-const accountReducer1 = createReducer({ balance: 0 }, (builder) =>
-builder
-.addCase(deposit, (state, action) => {})
-.addCase(withdraw, (state, action) => {}),
-);
+При цьому інші властивості зберігаються
 
-Чому .addCase(deposit, (state, action) => {})
+blacklist: ["lang", "a"],
 
-а Не .addCase('account/deposit', (state, action) => {})
+REFACTOR
 
-- ФУНКЦІЯ - об'єкт , у об'єкта є метод toString(), коли об'єкт приводиться до рядка => викликається метод toString() - тобто для account, withdraw
+Переносимо все з store в slice
 
-export const deposit = createAction("account/deposit")
-
-- CreateAction для даних функцій, перевизначає метод toString() так, щоб він вертав такий рядок "account/deposit"
-
-const accountReducer1 = createReducer({ balance: 0 }, (builder) =>
-builder
-.addCase(deposit, (state, action) => {
-return {
-...state,
-balance: state.balance + action.payload,
+const persistConfig = {
+key: "locale",
+storage,
+whitelist: ["lang", "a"],
 };
-})
-.addCase(withdraw, (state, action) => {
-return {
-...state,
-balance: state.balance - action.payload,
-};
-}),
+
+export const persistedLocaleReducer = persistReducer(
+persistConfig,
+slice.reducer,
 );
 
-        =>>
+REHYDRATE
 
-ЧИ ПРАЦЮЄ?
+Take a look at the logic that dispatched this action: {type: 'persist/PERSIST', register: ƒ, rehydrate: ƒ}
 
-const accountReducer1 = createReducer({ balance: 0 }, (builder) =>
-builder
-.addCase(deposit, (state, action) => {
-state.balance += action.payload;
+У redux-persistв в action записується декілька функцій
 
-      // return {
-      //   ...state,
-      //   balance: state.balance + action.payload,
-      // };
-    })
-    .addCase(withdraw, (state, action) => {
-      state.balance -= action.payload;
-      // return {
-      //   ...state,
-      //   balance: state.balance - action.payload,
-      // };
-    }),
+Не дуже добре, але це нічого не ламає і це необхідно, щоб бібліотека працювала, тому необхідно декілька типів екшенів ігнорувати, щоб Redux на них не реагував
 
-);
+Для цього необхідно
 
-ВСЕ ПРАЦЮЄ
+https://redux-toolkit.js.org/usage/usage-guide#working-with-non-serializable-data
 
-В createReducer під капотом працює бібліотека Immer
+import {
 
-в State передає копію
+FLUSH,
+REHYDRATE,
+PAUSE,
+PERSIST,
+PURGE,
+REGISTER,
+} from 'redux-persist'
 
-(parameter) state: WritableNonArrayDraft<{
-balance: number;
-}>
+Якщо приходить якийсь тип екшенів з тих, які ми передали => ігнорую => йду далі
 
-Порівнює зміни і додає їх імутабельно
+ПОмилка вискакує тоді, коли до ред'юсера доходять екшени в якому є функції fn()
 
-5. Про Бібліотеку Immer
-
-6. Немає default case, він визначається за замовчуванням
-
-є addDefaultCase(() => {})
-
-7. Slice
-
-import { createSlice } from "@reduxjs/toolkit";
-
-const slice = createSlice({
-name: "account",
-initialState: { balance: 0 },
-reducers: {
-deposit(state, action) {
-state.balance += action.payload;
-},
-widthDraw(state, action) {
-state.balance -= action.payload;
-},
-},
-});
-console.log(slice);
-
-console.log(slice.actions.deposit);
-
-console.dir(slice.actions.deposit);
-console.dir(slice.actions.deposit(5));
-
-export const { deposit, widthDraw } = slice.actions;
-export const accountReducer = slice.reducer; //! Root reducer
-
-8. localeSlice.js
-
-export const slice = createSlice({
-name: "locale",
-initialState: { lang: "uk" },
-reducers: {
-changeLang(state, action) {
-state.lang = action.payload;
-},
-},
-});
-
-initialState: {
-lang: "uk",
-
-    a: {
-      b: {
-        c: 51,
-      },
-    },
-
-},
-
-!COPY
-qwerty(state, action) {
-state.a.b.c = action.payload;
-},
-
-9. PREPARE
-
-Окрім полів форми, нам ще треба id
-де ми відпавляємо дані ? => в формі
-Для чого формі знати про який id, це не її
-ЇЇ задача, зібрати дані і відпавити їх
-
-ID створюються всередині redux логіки
-
-Для цього використовується prepare, функція підготвки payload
-
-deposit(5)
-console.log(deposit(5))
-Якщо треба додати до цих двох властивостей ще якесь
-
-    deposit: {
-      reducer(state, action) {
-        state.balance += action.payload;
-      },
-      prepare(value) {
-         return {
-          payload: {
-            value,
-            id: Date.now(),
-          },
-        };
-      }
-    },
-
-console.log(deposit(6));
+Action - серіалізована сутність (на якій можна застосувати JSON.sringify())
