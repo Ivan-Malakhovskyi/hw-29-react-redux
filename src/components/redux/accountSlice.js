@@ -25,18 +25,8 @@ const accountSlice = createSlice({
       state.balance -= action.payload;
     },
   },
-  // reducers: {
-  //   deposit(state, action) {
-  //     state.balance += action.payload;
-  //   },
-  //   withdraw(state, action) {
-  //     state.balance -= action.payload;
-  //   },
-  // },
 });
 
 export const { deposit, withdraw, addUser } = accountSlice.actions;
-
-// console.log(addUser(10));
 
 export const accountReducer = accountSlice.reducer;
