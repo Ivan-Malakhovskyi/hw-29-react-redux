@@ -1,11 +1,11 @@
-import { useDispatch } from "react-redux";
-import { deposit, withdraw } from "./redux/accountReducer";
 import { useState } from "react";
+import { useDispatch } from "react-redux";
+import { deposit, withdraw } from "./redux/accountSlice";
 import { Balance } from "./Balance";
 
 export const Account = () => {
   const dispatch = useDispatch();
-  const [value, setValue] = useState(0);
+  const [value, setValue] = useState(Number(0));
 
   return (
     <div>
