@@ -1,0 +1,21 @@
+import { useSelector } from "react-redux";
+
+const UsersList = () => {
+  const users = useSelector((state) => state.users.items);
+
+  return (
+    users?.length > 0 && (
+      <ul>
+        {users.map(({ id, name, gender, avatar }) => (
+          <li key={id}>
+            <h2>{name}</h2>
+            <p>{gender}</p>
+            <img src={avatar} alt="user_img" width={300} height={300} />
+          </li>
+        ))}
+      </ul>
+    )
+  );
+};
+
+export default UsersList;
