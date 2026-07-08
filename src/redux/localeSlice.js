@@ -4,8 +4,18 @@ const localeSlice = createSlice({
   name: "locale",
   initialState: { lang: "uk", a: 1, b: 2, c: 3 },
   reducers: {
-    changeLang(state, action) {
-      state.lang = action.payload;
+    changeLang: {
+      reducer(state, action) {
+        state.lang = action.payload;
+      },
+      prepare(payload) {
+        return {
+          payload,
+          meta: {
+            ga: true,
+          },
+        };
+      },
     },
   },
 });
