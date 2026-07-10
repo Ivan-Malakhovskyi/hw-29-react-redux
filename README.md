@@ -87,6 +87,12 @@ slice.reducer,
 
 REHYDRATE
 
+    Тут "гідрація" означає: прочитати збережений стейт зі storage (localStorage/AsyncStorage/etc.) і влити його назад у Redux store перед першим рендером UI. Ніякого DOM тут немає, це чиста робота зі стейтом.
+
+PersistGate вирішує саме це: він підписується на persistor і не рендерить children, доки bootstrapped !== true
+
+Офіційна документація описує два режими: loading prop показує заданий компонент, поки персистенс не завершено, а після завершення рендерить children; альтернативно можна передати children як функцію, яка отримує аргумент bootstrapped — це зручно для transition-анімацій замість жорсткого перемикання.
+
 Take a look at the logic that dispatched this action: {type: 'persist/PERSIST', register: ƒ, rehydrate: ƒ}
 
 У redux-persistв в action записується декілька функцій
