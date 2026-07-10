@@ -1,7 +1,8 @@
 import { useSelector } from "react-redux";
-import { Account } from "./components/Account";
-import { LangSwitcher } from "./components/LangSwitcher";
-import { Balance } from "./components/Balance";
+import { Account, LangSwitcher, Balance } from "./components";
+// import { Account } from "./components/Account";
+// import { LangSwitcher } from "./components/LangSwitcher";
+// import { Balance } from "./components/Balance";
 
 function App() {
   const lang = useSelector((state) => state.locale.lang);
