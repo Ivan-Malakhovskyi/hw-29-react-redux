@@ -8,11 +8,6 @@ export const getAllUsers = async () => {
   return data;
 };
 
-export const getUserById = async (id) => {
-  const { data } = await axios.get(`/users/:${id}`);
-  return data;
-};
-
 export const createUser = async (userData) => {
   const { data } = await axios.post("/users", userData);
 

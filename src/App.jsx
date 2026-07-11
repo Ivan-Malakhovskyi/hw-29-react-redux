@@ -6,6 +6,7 @@ import User from "./components/User";
 
 function App() {
   const lang = useSelector((state) => state.locale.lang);
+
   return (
     <>
       <section>
