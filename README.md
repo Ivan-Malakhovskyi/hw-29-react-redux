@@ -1,47 +1,53 @@
 1. npm i redux-persist
 
+```js
 import {
-persistStore,
-persistReducer,
-FLUSH,
-REHYDRATE,
-PAUSE,
-PERSIST,
-PURGE,
-REGISTER,
-} from 'redux-persist'
+  persistStore,
+  persistReducer,
+  FLUSH,
+  REHYDRATE,
+  PAUSE,
+  PERSIST,
+  PURGE,
+  REGISTER,
+} from "redux-persist";
 
 import { configureStore } from "@reduxjs/toolkit";
 import { persistStore, persistReducer } from "redux-persist";
 import { accountReducer } from "./accountSlice";
 import { localeReducer } from "./localeSlice";
 import storage from "redux-persist/es/storage";
+```
 
 middleware - функція(проміжний обробник) яка стоїть, між відправкою екшена і доставкою його в редюсер
 
+```js
 const persistConfig = {
-key: "root",
-storage,
+  key: "root",
+  storage,
 };
 
 const persistedLocaleReducer = persistReducer(persistConfig, localeReducer);
 
 export const store = configureStore({
-reducer: {
-account: accountReducer,
-locale: persistedLocaleReducer,
-},
+  reducer: {
+    account: accountReducer,
+    locale: persistedLocaleReducer,
+  },
 });
 
 export const persistor = persistStore(store);
+```
 
 main.jsx
 
+```js
 import { PersistGate } from "redux-persist/integration/react";
 
 <PersistGate loading={<div>Loading ...</div>} persistor={persistor}>
-<App />
-</PersistGate>
+  <App />
+</PersistGate>;
+```
 
 REdux-persist починає слідкувати за стейтом за який відповідає редюсер
 
@@ -52,19 +58,23 @@ BLACKLIST & WHITELIST
 
 1. зберегти все крім чогось blacklist: ["c"] - все крім c
 
+```js
 {
 a:5,
 b: 10,
 c: 15
 }
+```
 
 2. тільки щось з переліку whitelist: ["c"] -тільки це
 
+```js
 initialState: { lang: "uk", a: 1, b: 2, c: 3 },
 
 whitelist: ["lang"],
 
 blacklist: ["lang"],
+```
 
 При цьому інші властивості зберігаються
 
@@ -74,16 +84,18 @@ REFACTOR
 
 Переносимо все з store в slice
 
+```js
 const persistConfig = {
-key: "locale",
-storage,
-whitelist: ["lang", "a"],
+  key: "locale",
+  storage,
+  whitelist: ["lang", "a"],
 };
 
 export const persistedLocaleReducer = persistReducer(
-persistConfig,
-slice.reducer,
+  persistConfig,
+  slice.reducer,
 );
+```
 
 REHYDRATE
 
@@ -103,15 +115,16 @@ Take a look at the logic that dispatched this action: {type: 'persist/PERSIST', 
 
 https://redux-toolkit.js.org/usage/usage-guide#working-with-non-serializable-data
 
+```js
 import {
-
-FLUSH,
-REHYDRATE,
-PAUSE,
-PERSIST,
-PURGE,
-REGISTER,
-} from 'redux-persist'
+  FLUSH,
+  REHYDRATE,
+  PAUSE,
+  PERSIST,
+  PURGE,
+  REGISTER,
+} from "redux-persist";
+```
 
 Якщо приходить якийсь тип екшенів з тих, які ми передали => ігнорую => йду далі
 
