@@ -1,6 +1,7 @@
 import { configureStore } from "@reduxjs/toolkit";
 import { accountReducer } from "./accountSlice";
 import { localeReducer } from "./localeSlice";
+import { usersReducer } from "./users/usersSlice";
 // import {
 //   persistStore,
 //   persistReducer,
@@ -25,6 +26,7 @@ export const store = configureStore({
   reducer: {
     account: accountReducer,
     locale: localeReducer,
+    users: usersReducer,
   },
   // middleware: (getDefaultMiddleware) =>
   //   getDefaultMiddleware({

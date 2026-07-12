@@ -2,7 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const localeSlice = createSlice({
   name: "locale",
-  initialState: { lang: "uk", a: 1, b: 2, c: 3 },
+  initialState: { lang: "uk" },
   reducers: {
     changeLang: {
       reducer(state, action) {
