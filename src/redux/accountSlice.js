@@ -13,6 +13,9 @@ const accountSlice = createSlice({
           payload: {
             value,
             id: Date.now(),
+            meta: {
+              ga: true,
+            },
           },
         };
       },

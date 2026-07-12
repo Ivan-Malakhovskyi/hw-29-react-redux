@@ -17,10 +17,25 @@ export const Account = () => {
 
       <Balance />
 
-      <button type="button" onClick={() => dispatch(deposit(value))}>
+      <button
+        type="button"
+        onClick={() => {
+          const action = deposit(value);
+          //GA.send(dispatch(action))
+
+          dispatch(action);
+        }}
+      >
         Deposit
       </button>
-      <button type="button" onClick={() => dispatch(withdraw(value))}>
+      <button
+        type="button"
+        onClick={() => {
+          const action = withdraw(value);
+          //GA.send(dispatch(action))
+          dispatch(action);
+        }}
+      >
         Withdraw
       </button>
     </div>
