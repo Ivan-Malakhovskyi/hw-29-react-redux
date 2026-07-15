@@ -1,8 +1,8 @@
+import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { fetchUsers } from "@/redux/users";
 import UsersList from "./UsersList";
 import { UsersForm } from "./UsersForm";
-import { useEffect } from "react";
-import { fetchUsers } from "@/redux/users";
 
 const User = () => {
   const dispatch = useDispatch();

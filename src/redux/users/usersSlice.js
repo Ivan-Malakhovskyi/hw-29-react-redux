@@ -8,23 +8,6 @@ const usersSlice = createSlice({
     isError: null,
     items: [],
   },
-  //   reducers: {
-  //     fetchUsersRequest(state) {
-  //       state.isLoading = true;
-  //     },
-
-  //     fetchUsersSuccess(state, action) {
-  //       state.isLoading = false;
-  //       state.items = action.payload;
-  //       state.isError = null;
-  //     },
-
-  //     fetchUsersError(state, action) {
-  //       state.isLoading = false;
-  //       state.isError = action.payload;
-  //     },
-  //   },
-
   extraReducers: (builder) => {
     builder
       .addCase(fetchUsers.pending, (state) => {
@@ -43,5 +26,3 @@ const usersSlice = createSlice({
 });
 
 export const usersReducer = usersSlice.reducer;
-// export const { fetchUsersError, fetchUsersSuccess, fetchUsersRequest } =
-//   usersSlice.actions;
