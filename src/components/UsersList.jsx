@@ -1,26 +1,23 @@
-// import { useDispatch, useSelector } from "react-redux";
-
 import { useSelector } from "react-redux";
+import { selectUsers } from "@/redux/users/selectors";
+import styles from "./UserList.module.css";
+import { UserListItem } from "./UserListItem";
 
 const UsersList = () => {
-  const users = useSelector((state) => state.users.items);
-  // const dispatch = useDispatch();
+  const users = useSelector(selectUsers);
 
   return (
-    users?.length > 0 && (
-      <ul>
-        {users.map(({ id, name, gender, phone }) => (
-          <li key={id}>
-            <h2>{name}</h2>
-            <p>{gender}</p>
-            <p>{phone}</p>
-            <button type="button" onClick={() => {}}>
-              Delete user
-            </button>
-          </li>
-        ))}
-      </ul>
-    )
+    <>
+      {users?.length > 0 ? (
+        <ul className={styles.user_list}>
+          {users.map((user) => (
+            <UserListItem key={user.id} {...user} />
+          ))}
+        </ul>
+      ) : (
+        <p>No one contact detected</p>
+      )}
+    </>
   );
 };
 

@@ -1,13 +1,13 @@
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchUsers } from "@/redux/users";
+import { fetchUsers, selectIsError } from "@/redux/users";
 import UsersList from "./UsersList";
 import { UsersForm } from "./UsersForm";
 
 const User = () => {
   const dispatch = useDispatch();
-  const isLoading = useSelector((state) => state.users.isLoading);
-  const isError = useSelector((state) => state.users.isError);
+
+  const isError = useSelector(selectIsError);
 
   useEffect(() => {
     dispatch(fetchUsers());
@@ -19,7 +19,7 @@ const User = () => {
 
       <h2>User Data</h2>
 
-      {isLoading ? <div>Loading data...</div> : <UsersList />}
+      <UsersList />
 
       {isError && <h2>ooops 😢</h2>}
     </section>
