@@ -1,4 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { persistReducer } from "redux-persist";
+import storage from "redux-persist/es/storage";
 
 const localeSlice = createSlice({
   name: "locale",
@@ -22,4 +24,13 @@ const localeSlice = createSlice({
 
 export const { changeLang } = localeSlice.actions;
 
-export const localeReducer = localeSlice.reducer;
+const config = {
+  key: "locale",
+  storage,
+  whitelist: ["locale"],
+};
+
+export const localePersistedReducer = persistReducer(
+  config,
+  localeSlice.reducer,
+);

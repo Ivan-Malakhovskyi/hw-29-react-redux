@@ -9,11 +9,11 @@ const UsersList = () => {
   return (
     users?.length > 0 && (
       <ul>
-        {users.map(({ id, name, gender, avatar }) => (
+        {users.map(({ id, name, gender, phone }) => (
           <li key={id}>
             <h2>{name}</h2>
             <p>{gender}</p>
-            <img src={avatar} alt="user_img" width={300} height={300} />
+            <p>{phone}</p>
             <button type="button" onClick={() => {}}>
               Delete user
             </button>

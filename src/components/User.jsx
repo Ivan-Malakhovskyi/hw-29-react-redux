@@ -14,15 +14,15 @@ const User = () => {
   }, [dispatch]);
 
   return (
-    <div>
-      <h2>User Data</h2>
-
+    <section>
       <UsersForm />
+
+      <h2>User Data</h2>
 
       {isLoading ? <div>Loading data...</div> : <UsersList />}
 
       {isError && <h2>ooops 😢</h2>}
-    </div>
+    </section>
   );
 };
 
