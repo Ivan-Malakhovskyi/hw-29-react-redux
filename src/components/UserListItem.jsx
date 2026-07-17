@@ -1,5 +1,5 @@
 import { useDispatch } from "react-redux";
-import { fetchDeleteUser } from "@/redux/users/usersOperations";
+import { fetchDeleteUser } from "@/redux/usersOperations";
 
 export const UserListItem = ({ id, gender, phone, name }) => {
   const dispatch = useDispatch();

@@ -1,13 +1,15 @@
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchUsers, selectIsError } from "@/redux/users";
+import { fetchUsers } from "@/redux/usersOperations";
+import { getIsError } from "@/redux/selectors";
 import UsersList from "./UsersList";
 import { UsersForm } from "./UsersForm";
+import { Filter } from "./Filter";
 
 const User = () => {
   const dispatch = useDispatch();
 
-  const isError = useSelector(selectIsError);
+  const isError = useSelector(getIsError);
 
   useEffect(() => {
     dispatch(fetchUsers());
@@ -17,7 +19,7 @@ const User = () => {
     <section>
       <UsersForm />
 
-      <h2>User Data</h2>
+      <Filter />
 
       <UsersList />
 

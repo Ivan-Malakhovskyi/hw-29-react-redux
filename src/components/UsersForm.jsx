@@ -2,9 +2,9 @@ import { useDispatch, useSelector } from "react-redux";
 import { ErrorMessage, Field, Form, Formik } from "formik";
 import * as Yup from "yup";
 import toast, { Toaster } from "react-hot-toast";
-import { fetchCreateUser } from "@/redux/users/usersOperations";
-import styles from "@/components/UsersForm.module.css";
-import { selectIsLoading } from "@/redux/users";
+import { getIsLoading } from "@/redux/selectors";
+import { fetchCreateUser } from "@/redux/usersOperations";
+import baseFormStyles from "@/components/Form.module.css";
 
 const phoneRegex = /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/;
 const addUserSchema = Yup.object().shape({
@@ -19,7 +19,7 @@ const addUserSchema = Yup.object().shape({
 
 export const UsersForm = () => {
   const dispatch = useDispatch();
-  const isLoading = useSelector(selectIsLoading);
+  const isLoading = useSelector(getIsLoading);
 
   const handleSubmit = (values, { resetForm }) => {
     if (!values) {
@@ -42,37 +42,41 @@ export const UsersForm = () => {
         onSubmit={handleSubmit}
         validationSchema={addUserSchema}
       >
-        <Form className={styles.form}>
-          <h2 className={styles.title}>Create User</h2>
+        <Form className={baseFormStyles.form}>
+          <h2 className={baseFormStyles.title}>Create User</h2>
 
-          <label htmlFor="name" className={styles.label}>
+          <label htmlFor="name" className={baseFormStyles.label}>
             Name
-            <Field className={styles.input} name="name" type="text" />
+            <Field className={baseFormStyles.input} name="name" type="text" />
             <ErrorMessage
-              className={styles.error}
+              className={baseFormStyles.error}
               name="name"
               component="div"
             />
           </label>
-          <label htmlFor="phone" className={styles.label}>
+          <label htmlFor="phone" className={baseFormStyles.label}>
             Phone
-            <Field className={styles.input} name="phone" type="tel" />
+            <Field className={baseFormStyles.input} name="phone" type="tel" />
             <ErrorMessage
-              className={styles.error}
+              className={baseFormStyles.error}
               name="phone"
               component="div"
             />
           </label>
 
-          <label htmlFor="gender" className={styles.label}>
+          <label htmlFor="gender" className={baseFormStyles.label}>
             Gender
-            <Field className={styles.input} as="select" name="gender">
+            <Field className={baseFormStyles.input} as="select" name="gender">
               <option value="man">Man</option>
               <option value="woman">Woman</option>
             </Field>
           </label>
 
-          <button type="submit" className={styles.button} disabled={isLoading}>
+          <button
+            type="submit"
+            className={baseFormStyles.button}
+            disabled={isLoading}
+          >
             Create
           </button>
           <Toaster />
