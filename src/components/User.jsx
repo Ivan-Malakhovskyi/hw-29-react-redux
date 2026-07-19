@@ -1,13 +1,14 @@
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchUsers } from "@/redux/users";
+import { fetchUsers } from "@/redux/usersOperations";
 import UsersList from "./UsersList";
 import { UsersForm } from "./UsersForm";
+import { getIsError, getIsLoading } from "@/redux/selectors";
 
 const User = () => {
   const dispatch = useDispatch();
-  const isLoading = useSelector((state) => state.users.isLoading);
-  const isError = useSelector((state) => state.users.isError);
+  const isLoading = useSelector(getIsLoading);
+  const isError = useSelector(getIsError);
 
   useEffect(() => {
     dispatch(fetchUsers());

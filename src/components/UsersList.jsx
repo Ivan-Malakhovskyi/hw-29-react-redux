@@ -1,10 +1,14 @@
-// import { useDispatch, useSelector } from "react-redux";
-
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { getUsers } from "@/redux/selectors";
+import { fetchDeleteUser } from "@/redux/usersOperations";
 
 const UsersList = () => {
-  const users = useSelector((state) => state.users.items);
-  // const dispatch = useDispatch();
+  const users = useSelector(getUsers);
+  const dispatch = useDispatch();
+
+  const handleDelete = (userId) => {
+    dispatch(fetchDeleteUser(userId));
+  };
 
   return (
     users?.length > 0 && (
@@ -14,7 +18,7 @@ const UsersList = () => {
             <h2>{name}</h2>
             <p>{gender}</p>
             <p>{phone}</p>
-            <button type="button" onClick={() => {}}>
+            <button type="button" onClick={() => handleDelete(id)}>
               Delete user
             </button>
           </li>

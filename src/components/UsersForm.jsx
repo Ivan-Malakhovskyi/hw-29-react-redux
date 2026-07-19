@@ -2,6 +2,7 @@ import { useDispatch } from "react-redux";
 import { ErrorMessage, Field, Form, Formik } from "formik";
 import * as Yup from "yup";
 import toast from "react-hot-toast";
+import { fetchCreateUser } from "@/redux/usersOperations";
 
 const phoneRegex = /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/;
 
@@ -24,7 +25,7 @@ export const UsersForm = () => {
       return;
     }
 
-    // dispatch(fetchCreateUser(values));
+    dispatch(fetchCreateUser(values));
     resetForm();
   };
 
@@ -32,7 +33,7 @@ export const UsersForm = () => {
     <Formik
       initialValues={{
         name: "",
-        gender: "",
+        gender: "Man",
         phone: "",
       }}
       onSubmit={handleSubmit}

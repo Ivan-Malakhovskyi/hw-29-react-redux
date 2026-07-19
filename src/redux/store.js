@@ -1,7 +1,5 @@
 import { configureStore } from "@reduxjs/toolkit";
-import { accountReducer } from "./accountSlice";
-import { localePersistedReducer } from "./localeSlice";
-import { usersReducer } from "./users/usersSlice";
+import { usersReducer } from "./usersSlice";
 import {
   FLUSH,
   REHYDRATE,
@@ -13,8 +11,6 @@ import {
 
 export const store = configureStore({
   reducer: {
-    account: accountReducer,
-    locale: localePersistedReducer,
     users: usersReducer,
   },
   middleware: (getDefaultMiddleware) =>
