@@ -1,5 +1,9 @@
+import { fetchDeleteUser } from "@/redux/operations";
+import { useDispatch } from "react-redux";
+
 export const UserListItem = ({ id, gender, phone, name }) => {
-  const handleDelete = () => {};
+  const dispatch = useDispatch();
+  const handleDelete = () => dispatch(fetchDeleteUser(id));
 
   return (
     <li key={id}>
