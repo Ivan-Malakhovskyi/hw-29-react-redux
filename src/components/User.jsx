@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchUsers } from "@/redux/usersOperations";
+import { fetchUsers } from "@/redux/operations";
 import { getIsError } from "@/redux/selectors";
 import UsersList from "./UsersList";
 import { UsersForm } from "./UsersForm";

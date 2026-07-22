@@ -1,6 +1,6 @@
 import { Hourglass } from "react-loader-spinner";
 
-export const Spiner = ({ width = 80, height = 80 }) => {
+export const Spinner = ({ width = 80, height = 80 }) => {
   return (
     <Hourglass
       visible={true}

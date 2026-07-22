@@ -7,7 +7,7 @@ import {
 } from "@/redux/selectors";
 import styles from "./UserList.module.css";
 import { UserListItem } from "./UserListItem";
-import { Spiner } from "./Spiner";
+import { Spinner } from "./Spinner";
 
 const UsersList = () => {
   const users = useSelector(getUsers);
@@ -35,7 +35,7 @@ const UsersList = () => {
         </p>
       )}
 
-      {isLoading && !isError && <Spiner />}
+      {isLoading && !isError && <Spinner />}
     </>
   );
 };
