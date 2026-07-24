@@ -1,15 +1,12 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-import { fetchCreateUser, fetchDeleteUser, fetchUsers } from "./operations";
-
-const handlePending = (state) => {
-  state.isLoading = true;
-};
-
-const handleError = (state, action) => {
-  state.isLoading = false;
-  state.isError = action.payload;
-};
+import {
+  fetchCreateUser,
+  fetchDeleteUser,
+  fetchToggleStatus,
+  fetchUsers,
+} from "./operations";
+import { addGenericMatcher } from "./genericMatcher";
 
 const usersSlice = createSlice({
   name: "users",
@@ -21,31 +18,28 @@ const usersSlice = createSlice({
   extraReducers: (builder) => {
     builder
       //Get All
-      .addCase(fetchUsers.pending, handlePending)
       .addCase(fetchUsers.fulfilled, (state, action) => {
-        state.isLoading = false;
-        state.isError = null;
         state.items = action.payload;
       })
-      .addCase(fetchUsers.rejected, handleError)
       //Create
-      .addCase(fetchCreateUser.pending, handlePending)
       .addCase(fetchCreateUser.fulfilled, (state, action) => {
-        state.isLoading = false;
-        state.isError = null;
         state.items.push(action.payload);
       })
-      .addCase(fetchCreateUser.rejected, handleError)
+
       // Delete
-      .addCase(fetchDeleteUser.pending, handlePending)
       .addCase(fetchDeleteUser.fulfilled, (state, action) => {
-        state.isLoading = false;
-        state.isError = null;
         state.items = state.items.filter(
           (item) => item.id !== action.payload.id,
         );
+        console.log(state.items);
       })
-      .addCase(fetchDeleteUser.rejected, handleError);
+      .addCase(fetchToggleStatus.fulfilled, (state, action) => {
+        const idx = state.items.findIndex(
+          (user) => user.id === action.payload.id,
+        );
+        state.items.splice(idx, 1, action.payload);
+      });
+    addGenericMatcher(builder);
   },
 });
 

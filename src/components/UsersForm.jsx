@@ -6,7 +6,7 @@ import { selectIsLoading } from "@/redux/selectors";
 import { fetchCreateUser } from "@/redux/operations";
 import baseFormStyles from "@/components/Form.module.css";
 
-const phoneRegex = /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/;
+const phoneRegex = /^[+]?[(]?[0-9]{3}[)]?[-\s.]?[0-9]{3}[-\s.]?[0-9]{4,6}$/;
 const addUserSchema = Yup.object().shape({
   name: Yup.string()
     .min(2, "Too Short!")
@@ -38,6 +38,7 @@ export const UsersForm = () => {
           name: "",
           phone: "",
           gender: "man",
+          status: false,
         }}
         onSubmit={handleSubmit}
         validationSchema={addUserSchema}
@@ -70,6 +71,11 @@ export const UsersForm = () => {
               <option value="man">Man</option>
               <option value="woman">Woman</option>
             </Field>
+          </label>
+
+          <label htmlFor="status">
+            Status
+            <Field type="checkbox" name="status" />
           </label>
 
           <button

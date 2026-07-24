@@ -17,7 +17,7 @@ export const UsersList = () => {
     <>
       <ul className={styles.user_list}>
         {users.map((user) => (
-          <UserListItem key={user.id} {...user} />
+          <UserListItem key={user.id} user={user} />
         ))}
       </ul>
 
