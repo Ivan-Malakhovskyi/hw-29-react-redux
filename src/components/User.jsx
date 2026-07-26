@@ -1,29 +1,29 @@
+import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { fetchUsers } from "@/redux/operations";
+import { getIsError } from "@/redux/selectors";
 import UsersList from "./UsersList";
 import { UsersForm } from "./UsersForm";
-import { useEffect } from "react";
-import { fetchUsers } from "@/redux/users";
+import { Filter } from "./Filter";
 
-const User = () => {
+export const User = () => {
   const dispatch = useDispatch();
-  const isLoading = useSelector((state) => state.users.isLoading);
-  const isError = useSelector((state) => state.users.isError);
+
+  const isError = useSelector(getIsError);
 
   useEffect(() => {
     dispatch(fetchUsers());
   }, [dispatch]);
 
   return (
-    <div>
-      <h2>User Data</h2>
-
+    <section>
       <UsersForm />
 
-      {isLoading ? <div>Loading data...</div> : <UsersList />}
+      <Filter />
+
+      <UsersList />
 
       {isError && <h2>ooops 😢</h2>}
-    </div>
+    </section>
   );
 };
-
-export default User;
