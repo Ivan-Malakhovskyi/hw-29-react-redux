@@ -1,15 +1,13 @@
 import User from "./components/User";
 
-function App() {
+export const App = () => {
   return (
     <>
       <section>
-        <h1>Title </h1>
+        <h1>Account App </h1>
 
         <User />
       </section>
     </>
   );
-}
-
-export default App;
+};
