@@ -9,7 +9,7 @@ import styles from "./UserList.module.css";
 import { UserListItem } from "./UserListItem";
 import { Spinner } from "./Spinner";
 
-const UsersList = () => {
+export const UsersList = () => {
   const users = useSelector(getUsers);
   const filter = useSelector(getFIlter);
   const isLoading = useSelector(getIsLoading);
@@ -39,5 +39,3 @@ const UsersList = () => {
     </>
   );
 };
-
-export default UsersList;

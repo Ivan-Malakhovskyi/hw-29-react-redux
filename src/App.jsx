@@ -1,6 +1,6 @@
 import User from "./components/User";
 
-function App() {
+export const App = () => {
   return (
     <>
       <section>
@@ -10,6 +10,4 @@ function App() {
       </section>
     </>
   );
-}
-
-export default App;
+};

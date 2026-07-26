@@ -6,7 +6,7 @@ import UsersList from "./UsersList";
 import { UsersForm } from "./UsersForm";
 import { Filter } from "./Filter";
 
-const User = () => {
+export const User = () => {
   const dispatch = useDispatch();
 
   const isError = useSelector(getIsError);
@@ -27,5 +27,3 @@ const User = () => {
     </section>
   );
 };
-
-export default User;
