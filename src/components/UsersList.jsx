@@ -1,15 +1,12 @@
 import { useSelector } from "react-redux";
-import {
-  selectIsLoading,
-  selectIsError,
-  selectVisibleUsers,
-} from "@/redux/selectors";
+import { selectIsLoading, selectIsError } from "@/redux/selectors";
 import styles from "./UserList.module.css";
 import { UserListItem } from "./UserListItem";
 import { Spinner } from "./Spinner";
+import { selectVisibleAdapterUsers } from "@/redux/usersSlice";
 
 export const UsersList = () => {
-  const { users, filters } = useSelector(selectVisibleUsers);
+  const { users, filters } = useSelector(selectVisibleAdapterUsers);
   const isLoading = useSelector(selectIsLoading);
   const isError = useSelector(selectIsError);
 
