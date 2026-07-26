@@ -1,140 +1,215 @@
-Для отримання шматків стану в redux використовується useSelector(), який приймає cb де в першому параметрі буде стан. Тому ми можемо винести ці функції в окремі файли і викликати в селекторах, де це потрібно, щоб наш компонент не знав про форму стану. Один секлектор може використовуватись в багатьох компонентах. А якщо цих функцій не має, тоді потрібно правити всі файли, де є useSelector(),а не одне місце
+Нормалізація стану — це підхід до організації Redux store, коли дані зберігаються у вигляді плоских структур (за принципом реляційної бази даних), а не у вигляді вкладених/дублікованих об'єктів. Ідея запозичена прямо з баз даних: замість вкладених JSON-дерев — таблиці з ключами та referencing по id.
 
-export const selectUser = (state) => state.user.user; - простий селектор
+Проблеми тут:
 
-Є також складені селектори, які беруть декілька селекторів і повертають інший стан за який відповідають дані селектори, наприклад обчислення якісь
+Дублювання даних — Alex зберігається в кількох місцях. Оновив ім'я в одному — забув в іншому, і в тебе користувач "Alex" в одному пості і "Alexander" в іншому. Шизофренія на рівні стейту.
+Складні оновлення — щоб змінити коментар, треба знайти пост, знайти коментар всередині масиву, замапити все заново.
+Дорогі ре-рендери — компонент, підписаний на posts, ре-рендериться навіть якщо змінився лише коментар в одному пості.
 
-1.TaskList
-
-В селекторах обчислюється лише redux стан
-
-Пропси, стан - це не робота селектора. Це робота компонента
-
-TaskCounter
-
-Оптимізація
-
-Є проблема
-
-Як працюють селектори? Коли змінюється стан => викликається селектор
-наші складні селектори залежать від певних кусків стану, але в нас є й інші властивості стану, і коли буде змінюватись інший кусок стану над яким не працює селектор, то він буде всеодно викликатися
-
-console.log() в selectVisibleTasks
-
-1.4 selectVisibleTasks викликався при монтуванні
-
-2 рази ок, бо спочатку був пустий масив, а потім прийшли дані, і компонент перемалювався, але звідки ще 2
-redux devtools
-
-У нас стан виглядає так
-
-tasks: { items(pin): isLoading(pin):true error(pin):null }
-
-Що відьувається при http request
-
-isLoading = true = pending
-
-isLoading = false = fullfilled item = [todos]
-
-isError - null
-
-Викликається selectVisibleTasks, тому що useSelector не знає, що конкретно змінилось
-
-Змінюємо статус - скільки раз викликається
-
-selectTaskCount
-
-console.log("selectTaskCount". Date.now())
-
-Від чого залежить taskCount - від кількості tasks, але викликається навіть при зміні фільтрів
-
-Тому що всі селектори викликаються, коли змінюється redux стан
-
-Коли викликаються прості селектори - не проблема, вони нічого не обчислюють, вони повертають посилання на ті ж самі об'єкти і реакт нічого не перерендрює, а складні селектори, роблять map, filter, reduce, повертають нові об'єкти, масиви
-
-Оптимізація(мемоізація) селекторів
-
-Як працює мемоізація
-
-func(a, b) { return a + b
-}
-
-func.cache = {}
-
-func(1,2)
-Що відбувається при виклику, перед тим як виконувати тіло, воно іде в кеш і дивиться чи вже був виклик з такими аргументами
-
-Ні - виконує тіло, і в кеш кладе
-Так, тіло функції не виконується, береться результат з кешу і повертає старий кеш
-{"1,2": 3} - кеш
-
-func(2, 5)
-{"2, 5": 7}
-
-func(2, 5) => 7
-
-{"2, 5": 7}
-
-func(tasks, filters) {
-return a + b }
-
-тільки коли змінюється tasks або filters - викликайся
-
-Для мемоізації використовується вбудована функція createSelector
-
-Масив залежностей
-Функція, яка буде мемозована
-Принцип роботи як в useMemo
-
-https://alexkondov.com/tao-of-react/
+Коли нормалізація виправдана
+Дані з бекенду мають вкладену/реляційну природу (пости→автори→коментарі)
+Одна й та сама сутність з'являється в різних частинах UI
+Потрібні часті point-оновлення окремих елементів (лайк на коментарі, редагування юзера)
 
 ```js
-
-    .addMatcher(
-      isPending(fetchUsers, fetchCreateUser, fetchDeleteUser),
-      (state) => {
-        state.isLoading = true;
-      },
-)
-```
-
-```js
-    .addMatcher(
-      isRejected(fetchCreateUser, fetchDeleteUser, fetchUsers),
-      (state, action) => {
-        state.isLoading = false;
-        state.isError = action.payload;
-      },
-    )
-    .addMatcher(
-      isFulfilled(fetchCreateUser, fetchUsers, fetchDeleteUser),
-      (state) => {
-        state.isLoading = false;
-        state.isError = null;
-      },
-    )
-```
-
-```js
-export const isPendingAction = (action) => action.type.endsWith("/pending");
-export const isFulfilledAction = (action) => action.type.endsWith("/fulfilled");
-export const isRejectedAction = (action) => action.type.endsWith("/rejected");
-
-export const addGenericMatcher = (builder) => {
-  builder
-    .addMatcher(isPendingAction, (state) => {
-      state.isLoading = true;
-      state.isError = null;
-    })
-    .addMatcher(isFulfilledAction, (state) => {
-      state.isLoading = false;
-      state.isError = null;
-    })
-    .addMatcher(isRejectedAction, (state, action) => {
-      state.isLoading = false;
-      state.isError = action.payload;
-    });
+// Ненормалізований стан — типова помилка новачків
+const state = {
+  posts: [
+    {
+      id: 1,
+      title: "Redux is fun",
+      author: { id: 1, name: "Alex" },
+      comments: [
+        { id: 1, text: "Nice!", author: { id: 2, name: "Kate" } },
+        { id: 2, text: "Agree", author: { id: 1, name: "Alex" } },
+      ],
+    },
+    {
+      id: 2,
+      title: "State management",
+      author: { id: 1, name: "Alex" }, // дублікат Alex
+      comments: [],
+    },
+  ],
 };
-
-addGenericMatcher(builder);
 ```
+
+Пояснюємо на аналогії з таблицями SQL: замість вкладеності — id як зовнішній ключ.
+
+Показати аналогію в Dbeaver
+
+// ✅ Нормалізований стан
+
+```js
+const state = {
+  posts: {
+    byId: {
+      1: { id: 1, title: "Redux is fun", author: 1, comments: [1, 2] },
+      2: { id: 2, title: "State management", author: 1, comments: [] },
+    },
+    allIds: [1, 2],
+  },
+  users: {
+    byId: {
+      1: { id: 1, name: "Alex" },
+      2: { id: 2, name: "Kate" },
+    },
+    allIds: [1, 2],
+  },
+  comments: {
+    byId: {
+      1: { id: 1, text: "Nice!", author: 2 },
+      2: { id: 2, text: "Agree", author: 1 },
+    },
+    allIds: [1, 2],
+  },
+};
+```
+
+Ми зберігаємо кожну сутність рівно один раз, а посилаємось на неї по id — так само, як таблиця posts посилається на users через author_id
+
+Плюси такого підходу
+
+- оновлення O(1) — знайшов по ключу, а не пройшовся циклом по масиву;
+- немає розсинхрону даних;
+- ре-рендериться тільки те, що дійсно змінилось.
+
+```js
+// Ручна нормалізація через createSlice — робочий, але багатослівний варіант
+  initialState: {
+    isLoading: false,
+    isError: null,
+    byId: {},
+    allIds: [],
+    items: [],
+  },
+```
+
+```js
+      .addCase(fetchUsers.fulfilled, (state, action) => {
+        state.byId = {};
+        state.allIds = [];
+        action.payload.forEach((user) => {
+          state.byId[user.id] = user;
+          state.allIds.push(user.id);
+        });
+      })
+      .addCase(fetchToggleStatus.fulfilled, (state, action) => {
+        const user = action.payload;
+
+        if (!state.byId[user.id]) {
+          state.allIds.push(user.id);
+        }
+        state.byId[user.id] = user;
+      })
+      .addCase(fetchCreateUser.fulfilled, (state, action) => {
+        const user = action.payload;
+        state.byId[user.id] = user;
+        state.allIds.push(user.id);
+      })
+      .addCase(fetchDeleteUser.fulfilled, (state, action) => {
+        const userId = action.payload.id;
+        delete state.byId[userId];
+        state.allIds = state.allIds.filter((id) => id !== userId);
+      });
+
+export const selectAllIdsUsers = (state) =>
+  state.users.allIds.map((id) => state.users.byId[id]);
+
+export const selectUsersById = (state, id) => state.users.byId[id];
+```
+
+```js
+use if diff then id
+
+  selectId: (user) => {
+    console.log(user);
+    return user.userId;
+  },
+```
+
+```js
+const usersAdapter = createEntityAdapter({
+  // selectId: (user) => {
+  //   console.log(user);
+  //   return user.id;
+  // },
+  sortComparer: (a, b) => a.name.localeCompare(b.name),
+});
+```
+
+```js
+initialState: usersAdapter.getInitialState({
+  isLoading: false,
+  isError: null,
+  items: [],
+});
+```
+
+```js
+  .addCase(fetchUsers.fulfilled, (state, action) => {
+  usersAdapter.setAll(state, action.payload);
+  })
+
+```
+
+```js
+   .addCase(fetchCreateUser.fulfilled, (state, action) => {
+        usersAdapter.addOne(state, action.payload);
+      });
+```
+
+```js
+ .addCase(fetchDeleteUser.fulfilled, (state, action) => {
+        usersAdapter.removeOne(state, action.payload.id);
+      })
+```
+
+```js
+      .addCase(fetchToggleStatus.fulfilled, (state, action) => {
+        console.log(action.payload);
+        usersAdapter.upsertOne(state, action.payload);
+      });
+
+
+      export const { selectAll: selectAllUsers, selectById: selectUserById } =
+  usersAdapter.getSelectors((state) => state.users);
+```
+
+```js
+export const selectAdapterVisibleItems = createSelector(
+  [selectAllUsers, selectFilters],
+  (users, filters) => {
+    return {
+      users: users.filter((user) =>
+        user.name.toLowerCase().includes(filters.toLowerCase()),
+      ),
+      filters,
+    };
+  },
+);
+```
+
+upsert() => put
+
+updateOne() => patch
+
+updateOne очікує { id, changes } — тобто частковий об'єкт змін, і вимагає, щоб запис з таким id вже існував у store. Якщо його там нема — RTK тихо нічого не зробить (no-op), без помилки, без попередження. Знайти таку помилку потім — той ще квест.
+
+upsertOne очікує повний об'єкт сутності (весь user, а не тільки { completed }) і сам вирішує:
+
+якщо запис з таким id вже є в store → update (як updateOne, але замінює/мерджить весь об'єкт);
+якщо запису нема → insert (додає новий).
+
+Тут action.payload — це те, що реально повернув бекенд (response.data), а не той шматок, який ти сам вигадав на клієнті. Сервер може повернути більше, ніж просто completed — наприклад, він міг оновити updatedAt, перерахувати якісь похідні поля, застосувати серверну валідацію тощо. upsertOne бере цей повний об'єкт як джерело правди і кладе його в store як є.
+
+Якби тут стояв updateOne, довелось би вручну обгортати:
+
+```js
+usersAdapter.updateOne(state, {
+  id: action.payload.id,
+  changes: action.payload,
+});
+```
+
+що технічно теж працює, але зайвий boilerplate, коли upsertOne робить це за тебе одним викликом.

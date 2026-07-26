@@ -19,3 +19,9 @@ export const deleteUserById = async (id) => {
 
   return data;
 };
+
+export const toggleStatus = async (id, user) => {
+  const { data } = await axios.put(`/users/${id}`, { status: !user.status });
+
+  return data;
+};

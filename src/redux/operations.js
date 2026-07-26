@@ -33,3 +33,14 @@ export const fetchDeleteUser = createAsyncThunk(
     }
   },
 );
+
+export const fetchToggleStatus = createAsyncThunk(
+  "users/fetchToggleStatus",
+  async (user, { rejectWithValue }) => {
+    try {
+      return await usersAPI.toggleStatus(user.id, user);
+    } catch (error) {
+      rejectWithValue(error);
+    }
+  },
+);

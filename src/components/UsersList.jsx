@@ -1,37 +1,28 @@
 import { useSelector } from "react-redux";
-import {
-  getIsLoading,
-  getIsError,
-  getUsers,
-  getFIlter,
-} from "@/redux/selectors";
+import { selectIsLoading, selectIsError } from "@/redux/selectors";
 import styles from "./UserList.module.css";
 import { UserListItem } from "./UserListItem";
 import { Spinner } from "./Spinner";
+import { selectVisibleAdapterUsers } from "@/redux/usersSlice";
 
 export const UsersList = () => {
-  const users = useSelector(getUsers);
-  const filter = useSelector(getFIlter);
-  const isLoading = useSelector(getIsLoading);
-  const isError = useSelector(getIsError);
-
-  const filteredUsers = users.filter((user) =>
-    user.name.toLowerCase().includes(filter.toLowerCase()),
-  );
+  const { users, filters } = useSelector(selectVisibleAdapterUsers);
+  const isLoading = useSelector(selectIsLoading);
+  const isError = useSelector(selectIsError);
 
   return (
     <>
       <ul className={styles.user_list}>
-        {filteredUsers.map((user) => (
-          <UserListItem key={user.id} {...user} />
+        {users.map((user) => (
+          <UserListItem key={user.id} user={user} />
         ))}
       </ul>
 
       {users.length === 0 && !isLoading && <p>No one contact detected</p>}
 
-      {filteredUsers.length === 0 && (
+      {users.length === 0 && (
         <p>
-          Contact with name <b>{filter}</b> was not found
+          Contact with name <b>{filters}</b> was not found
         </p>
       )}
 

@@ -1,52 +1,86 @@
-import { createSlice } from "@reduxjs/toolkit";
+import {
+  createEntityAdapter,
+  createSelector,
+  createSlice,
+} from "@reduxjs/toolkit";
 
-import { fetchCreateUser, fetchDeleteUser, fetchUsers } from "./operations";
+import {
+  fetchCreateUser,
+  fetchDeleteUser,
+  fetchToggleStatus,
+  fetchUsers,
+} from "./operations";
 
-const handlePending = (state) => {
-  state.isLoading = true;
-};
+import { addGenericMatcher } from "./genericMatcher";
+import { selectFilters } from "./selectors";
 
-const handleError = (state, action) => {
-  state.isLoading = false;
-  state.isError = action.payload;
-};
+//! !id => selectId =(state) => state.bookID
+
+const usersAdapter = createEntityAdapter({
+  sortComparer: (a, b) => a.name.localeCompare(b.name),
+});
 
 const usersSlice = createSlice({
   name: "users",
-  initialState: {
+  initialState: usersAdapter.getInitialState({
     isLoading: false,
     isError: null,
-    items: [],
-  },
+  }),
   extraReducers: (builder) => {
     builder
       //Get All
-      .addCase(fetchUsers.pending, handlePending)
       .addCase(fetchUsers.fulfilled, (state, action) => {
-        state.isLoading = false;
-        state.isError = null;
-        state.items = action.payload;
+        usersAdapter.setAll(state, action.payload);
+        //  state.byId = {};
+        //  state.allIds = [];
+        //  action.payload.forEach((user) => {
+        //    state.byId[user.id] = user;
+        //    state.allIds.push(user.id);
+        //  });
       })
-      .addCase(fetchUsers.rejected, handleError)
       //Create
-      .addCase(fetchCreateUser.pending, handlePending)
       .addCase(fetchCreateUser.fulfilled, (state, action) => {
-        state.isLoading = false;
-        state.isError = null;
-        state.items.push(action.payload);
+        usersAdapter.addOne(state, action.payload);
+
+        // const user = action.payload;
+        // state.byId[user.id] = user;
+        // state.allIds.push(user.id);
       })
-      .addCase(fetchCreateUser.rejected, handleError)
       // Delete
-      .addCase(fetchDeleteUser.pending, handlePending)
       .addCase(fetchDeleteUser.fulfilled, (state, action) => {
-        state.isLoading = false;
-        state.isError = null;
-        state.items = state.items.filter(
-          (item) => item.id !== action.payload.id,
-        );
+        usersAdapter.removeOne(state, action.payload.id);
+
+        // const userId = action.payload.id;
+        // delete state.byId[userId];
+        // state.allIds = state.allIds.filter((id) => id !== userId);
       })
-      .addCase(fetchDeleteUser.rejected, handleError);
+      .addCase(fetchToggleStatus.fulfilled, (state, action) => {
+        usersAdapter.upsertOne(state, action.payload);
+
+        // const user = action.payload;
+        // if (!state.byId[user.id]) {
+        //   state.allIds.push(user.id);
+        // }
+        // state.byId[user.id] = user;
+      });
+    addGenericMatcher(builder);
   },
 });
+
+export const { selectAll: selectAllUsers, selectById: selectUserById } =
+  usersAdapter.getSelectors((state) => state.users);
+
+export const selectVisibleAdapterUsers = createSelector(
+  [selectAllUsers, selectFilters],
+  (users, filters) => {
+    console.log("🚀 ~ selectVisibleAdapterUsers:", Date.now());
+    return {
+      users: users.filter((user) =>
+        user.name.toLowerCase().includes(filters.toLowerCase()),
+      ),
+      filters,
+    };
+  },
+);
 
 export const usersReducer = usersSlice.reducer;
