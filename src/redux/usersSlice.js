@@ -3,6 +3,8 @@ import {
   createSelector,
   createSlice,
 } from "@reduxjs/toolkit";
+import { persistReducer } from "redux-persist";
+import storage from "redux-persist/es/storage";
 
 import {
   fetchCreateUser,
@@ -28,40 +30,17 @@ const usersSlice = createSlice({
   }),
   extraReducers: (builder) => {
     builder
-      //Get All
       .addCase(fetchUsers.fulfilled, (state, action) => {
         usersAdapter.setAll(state, action.payload);
-        //  state.byId = {};
-        //  state.allIds = [];
-        //  action.payload.forEach((user) => {
-        //    state.byId[user.id] = user;
-        //    state.allIds.push(user.id);
-        //  });
       })
-      //Create
       .addCase(fetchCreateUser.fulfilled, (state, action) => {
         usersAdapter.addOne(state, action.payload);
-
-        // const user = action.payload;
-        // state.byId[user.id] = user;
-        // state.allIds.push(user.id);
       })
-      // Delete
       .addCase(fetchDeleteUser.fulfilled, (state, action) => {
         usersAdapter.removeOne(state, action.payload.id);
-
-        // const userId = action.payload.id;
-        // delete state.byId[userId];
-        // state.allIds = state.allIds.filter((id) => id !== userId);
       })
       .addCase(fetchToggleStatus.fulfilled, (state, action) => {
         usersAdapter.upsertOne(state, action.payload);
-
-        // const user = action.payload;
-        // if (!state.byId[user.id]) {
-        //   state.allIds.push(user.id);
-        // }
-        // state.byId[user.id] = user;
       });
     addGenericMatcher(builder);
   },
@@ -73,7 +52,6 @@ export const { selectAll: selectAllUsers, selectById: selectUserById } =
 export const selectVisibleAdapterUsers = createSelector(
   [selectAllUsers, selectFilters],
   (users, filters) => {
-    console.log("🚀 ~ selectVisibleAdapterUsers:", Date.now());
     return {
       users: users.filter((user) =>
         user.name.toLowerCase().includes(filters.toLowerCase()),
@@ -83,4 +61,10 @@ export const selectVisibleAdapterUsers = createSelector(
   },
 );
 
-export const usersReducer = usersSlice.reducer;
+const config = {
+  key: "users",
+  storage,
+  whitelist: ["entities", "ids"],
+};
+
+export const persistedUsersReducer = persistReducer(config, usersSlice.reducer);

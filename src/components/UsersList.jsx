@@ -1,14 +1,16 @@
 import { useSelector } from "react-redux";
 import { selectIsLoading, selectIsError } from "@/redux/selectors";
+import { selectVisibleAdapterUsers } from "@/redux/usersSlice";
 import styles from "./UserList.module.css";
 import { UserListItem } from "./UserListItem";
 import { Spinner } from "./Spinner";
-import { selectVisibleAdapterUsers } from "@/redux/usersSlice";
 
 export const UsersList = () => {
   const { users, filters } = useSelector(selectVisibleAdapterUsers);
   const isLoading = useSelector(selectIsLoading);
   const isError = useSelector(selectIsError);
+
+  const isUsersEmpty = users.length === 0;
 
   return (
     <>
@@ -18,9 +20,9 @@ export const UsersList = () => {
         ))}
       </ul>
 
-      {users.length === 0 && !isLoading && <p>No one contact detected</p>}
+      {isUsersEmpty && !isLoading && !filters && <p>No one contact detected</p>}
 
-      {users.length === 0 && (
+      {isUsersEmpty && filters.length > 0 && (
         <p>
           Contact with name <b>{filters}</b> was not found
         </p>
