@@ -3,15 +3,16 @@ import { createRoot } from "react-dom/client";
 import "./index.css";
 import App from "./App.jsx";
 import { Provider } from "react-redux";
-import { store } from "./redux/store.js";
-// import { PersistGate } from "redux-persist/es/integration/react";
+import { PersistGate } from "redux-persist/es/integration/react";
+import { persistor, store } from "./redux/store.js";
+import { Spinner } from "./components/Spinner";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <Provider store={store}>
-      {/* <PersistGate loading={<div>Loading ....</div>} persistor={}> */}
-      <App />
-      {/* </PersistGate> */}
+      <PersistGate loading={<Spinner />} persistor={persistor}>
+        <App />
+      </PersistGate>
     </Provider>
   </StrictMode>,
 );

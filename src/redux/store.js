@@ -6,14 +6,15 @@ import {
   PERSIST,
   PURGE,
   REGISTER,
+  persistStore,
 } from "redux-persist";
 
-import { usersReducer } from "./usersSlice";
+import { persistedUsersReducer } from "./usersSlice";
 import { filterReducer } from "./filtersSlice";
 
 export const store = configureStore({
   reducer: {
-    users: usersReducer,
+    users: persistedUsersReducer,
     filters: filterReducer,
   },
   middleware: (getDefaultMiddleware) =>
@@ -23,3 +24,5 @@ export const store = configureStore({
       },
     }),
 });
+
+export const persistor = persistStore(store);
