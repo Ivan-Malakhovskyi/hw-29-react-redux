@@ -9,13 +9,15 @@ import {
   persistStore,
 } from "redux-persist";
 
-import { persistedUsersReducer } from "./usersSlice";
-import { filterReducer } from "./filtersSlice";
+import { persistedUsersReducer } from "./users/usersSlice";
+import { filterReducer } from "./users/filtersSlice";
+import { authReducer } from "./auth/authSlice";
 
 export const store = configureStore({
   reducer: {
     users: persistedUsersReducer,
     filters: filterReducer,
+    auth: authReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

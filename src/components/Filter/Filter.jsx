@@ -1,8 +1,8 @@
 import { useDispatch, useSelector } from "react-redux";
-import { selectFilters } from "@/redux/selectors";
-import { changeValueFilter } from "@/redux/filtersSlice";
-import styles from "./Form.module.css";
-import filter from "./Filter.module.css";
+import { selectFilters } from "@/redux/users/selectors";
+import { changeValueFilter } from "@/redux/users/filtersSlice";
+import baseFormStyles from "../styles/Form.module.css";
+import filterStyles from "./Filter.module.css";
 
 export const Filter = () => {
   const filterValue = useSelector(selectFilters);
@@ -11,26 +11,26 @@ export const Filter = () => {
   const handleRest = () => dispatch(changeValueFilter(""));
 
   return (
-    <div>
-      <h2 className={styles.title}>Filter</h2>
+    <>
+      <h2 className={baseFormStyles.title}>Filter</h2>
 
-      <form className={filter.form}>
+      <form className={filterStyles.form}>
         <input
-          className={styles.input}
+          className={filterStyles.input}
           value={filterValue}
           onChange={handleChange}
           type="text"
           name="filter"
         />
         <button
+          className={filterStyles.button}
           type="button"
           onClick={handleRest}
-          className={filter.btnReset}
           disabled={!filterValue}
         >
           Reset filters
         </button>
       </form>
-    </div>
+    </>
   );
 };

@@ -1,13 +1,11 @@
-import User from "./components/User";
+import { User } from "./components/User";
+import { UsersSection } from "./components/UsersSection";
 
 export const App = () => {
   return (
-    <>
-      <section>
-        <h1>Account App </h1>
-
-        <User />
-      </section>
-    </>
+    <div className="container">
+      <User />
+      <UsersSection />
+    </div>
   );
 };

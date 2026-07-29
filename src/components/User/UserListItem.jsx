@@ -1,5 +1,6 @@
 import { useDispatch } from "react-redux";
-import { fetchDeleteUser, fetchToggleStatus } from "@/redux/operations";
+import { fetchDeleteUser, fetchToggleStatus } from "@/redux/users/operations";
+import baseFormStyles from "../styles/Form.module.css";
 
 export const UserListItem = ({ user }) => {
   const dispatch = useDispatch();
@@ -13,11 +14,16 @@ export const UserListItem = ({ user }) => {
         checked={user.status}
         name="status"
         onChange={handleToggle}
+        className={baseFormStyles.input}
       />
       <h2>{user.name}</h2>
       <p>{user.ender}</p>
       <p>{user.phone}</p>
-      <button type="button" onClick={handleDelete}>
+      <button
+        type="button"
+        onClick={handleDelete}
+        className={baseFormStyles.button}
+      >
         Delete user
       </button>
     </li>

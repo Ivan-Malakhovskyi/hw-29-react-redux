@@ -1,10 +1,8 @@
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchUsers } from "@/redux/operations";
-import { selectIsError } from "@/redux/selectors";
-import { UsersList } from "./UsersList";
-import { UsersForm } from "./UsersForm";
-import { Filter } from "./Filter";
+import { fetchUsers } from "@/redux/users/operations";
+import { selectIsError } from "@/redux/users/selectors";
+import { CreateUserForm } from "./CreateUserForm";
 
 export const User = () => {
   const dispatch = useDispatch();
@@ -17,11 +15,9 @@ export const User = () => {
 
   return (
     <section>
-      <UsersForm />
+      <h1>Users App </h1>
 
-      <Filter />
-
-      <UsersList />
+      <CreateUserForm />
 
       {isError && <h2>ooops 😢</h2>}
     </section>

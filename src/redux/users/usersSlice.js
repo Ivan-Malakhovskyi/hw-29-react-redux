@@ -13,7 +13,7 @@ import {
   fetchUsers,
 } from "./operations";
 
-import { addGenericMatcher } from "./genericMatcher";
+import { addGenericMatcher } from "../genericMatcher";
 import { selectFilters } from "./selectors";
 
 //! !id => selectId =(state) => state.bookID

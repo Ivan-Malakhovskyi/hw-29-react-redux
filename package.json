@@ -9,15 +9,20 @@
     "lint": "eslint .",
     "preview": "vite preview"
   },
+  "resolutions": {
+    "styled-components": "^6"
+  },
   "dependencies": {
     "@reduxjs/toolkit": "^2.12.0",
     "axios": "^1.18.1",
+    "firebase": "^12.16.0",
     "formik": "^2.4.9",
     "react": "^19.2.6",
     "react-dom": "^19.2.6",
     "react-hot-toast": "^2.6.0",
     "react-loader-spinner": "^8.0.2",
     "react-redux": "^9.3.0",
+    "react-router": "^8.3.0",
     "redux-persist": "^6.0.0",
     "yup": "^1.7.1"
   },
@@ -25,7 +30,8 @@
     "@eslint/js": "^10.0.1",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
-    "@vitejs/plugin-react": "^6.0.1",
+    "@vitejs/plugin-react": "^6.0.4",
+    "babel-plugin-styled-components": "^2.3.0",
     "eslint": "^10.3.0",
     "eslint-plugin-react-hooks": "^7.1.1",
     "eslint-plugin-react-refresh": "^0.5.2",
