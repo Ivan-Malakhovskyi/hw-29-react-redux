@@ -3,7 +3,8 @@ import { apiClient } from "./apiClient";
 export const setToken = (store) => {
   apiClient.interceptors.request.use((config) => {
     console.log(config);
-    const accessToken = store.getState().auth;
+    const accessToken = store.getState().auth.token;
+    console.log(accessToken);
     if (accessToken) {
       config.headers.Authorization = `Bearer ${accessToken}`;
     }

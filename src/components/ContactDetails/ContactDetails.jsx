@@ -1,20 +1,20 @@
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router";
-import { fetchUserById } from "@/redux/users/operations";
-import { selectIsError, selectUserById } from "@/redux/users/selectors";
+// import { fetchUserById } from "@/redux/contacts/contactsOperations";
+import { selectIsError } from "@/redux/contacts/contactsSelectors";
 import { Spinner } from "../shared/Spinner";
 
 export const ContactDetails = () => {
   const { userId } = useParams();
   const dispatch = useDispatch();
-  const currentUser = useSelector((state) => selectUserById(state, userId));
+  // const currentUser = useSelector((state) => selectUserById(state, userId));
   const isLoading = useSelector(selectIsError);
   const isError = useSelector(selectIsError);
 
-  useEffect(() => {
-    dispatch(fetchUserById(userId));
-  }, [userId, dispatch]);
+  // useEffect(() => {
+  //   dispatch(fetchUserById(userId));
+  // }, [userId, dispatch]);
 
   return (
     <section>
@@ -22,7 +22,7 @@ export const ContactDetails = () => {
 
       {isLoading && !isError && <Spinner />}
 
-      {!isLoading && currentUser && !isError ? (
+      {/* {!isLoading && currentUser && !isError ? (
         <div>
           <p>{currentUser.name}</p>
           <p>{currentUser.phone}</p>
@@ -31,7 +31,7 @@ export const ContactDetails = () => {
         </div>
       ) : (
         "Contact with not found"
-      )}
+      )} */}
     </section>
   );
 };
