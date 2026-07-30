@@ -7,14 +7,14 @@ import { persistReducer } from "redux-persist";
 import storage from "redux-persist/es/storage";
 
 import {
-  fetchCreateUser,
-  fetchDeleteUser,
+  fetchContacts,
+  fetchCreateContact,
+  fetchDeleteContact,
   fetchToggleStatus,
-  fetchUsers,
-} from "./operations";
+} from "./contactsOperations";
 
 import { addGenericMatcher } from "../genericMatcher";
-import { selectFilters } from "./selectors";
+import { selectFilters } from "./contactsSelectors";
 
 //! !id => selectId =(state) => state.bookID
 
@@ -23,20 +23,20 @@ const usersAdapter = createEntityAdapter({
 });
 
 const usersSlice = createSlice({
-  name: "users",
+  name: "contacts",
   initialState: usersAdapter.getInitialState({
     isLoading: false,
     isError: null,
   }),
   extraReducers: (builder) => {
     builder
-      .addCase(fetchUsers.fulfilled, (state, action) => {
+      .addCase(fetchContacts.fulfilled, (state, action) => {
         usersAdapter.setAll(state, action.payload);
       })
-      .addCase(fetchCreateUser.fulfilled, (state, action) => {
+      .addCase(fetchCreateContact.fulfilled, (state, action) => {
         usersAdapter.addOne(state, action.payload);
       })
-      .addCase(fetchDeleteUser.fulfilled, (state, action) => {
+      .addCase(fetchDeleteContact.fulfilled, (state, action) => {
         usersAdapter.removeOne(state, action.payload.id);
       })
       .addCase(fetchToggleStatus.fulfilled, (state, action) => {
@@ -46,15 +46,15 @@ const usersSlice = createSlice({
   },
 });
 
-export const { selectAll: selectAllUsers, selectById: selectUserById } =
-  usersAdapter.getSelectors((state) => state.users);
+export const { selectAll: selectAllContacts, selectById: selectUserById } =
+  usersAdapter.getSelectors((state) => state.contacts);
 
 export const selectVisibleAdapterUsers = createSelector(
-  [selectAllUsers, selectFilters],
-  (users, filters) => {
+  [selectAllContacts, selectFilters],
+  (contacts, filters) => {
     return {
-      users: users.filter((user) =>
-        user.name.toLowerCase().includes(filters.toLowerCase()),
+      contacts: contacts.filter((contact) =>
+        contact.name.toLowerCase().includes(filters.toLowerCase()),
       ),
       filters,
     };
@@ -62,7 +62,7 @@ export const selectVisibleAdapterUsers = createSelector(
 );
 
 const config = {
-  key: "users",
+  key: "contacts",
   storage,
   whitelist: ["entities", "ids"],
 };

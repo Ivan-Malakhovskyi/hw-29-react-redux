@@ -2,8 +2,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { ErrorMessage, Field, Form, Formik } from "formik";
 import * as Yup from "yup";
 import toast, { Toaster } from "react-hot-toast";
-import { selectIsLoading } from "@/redux/users/selectors";
-import { fetchCreateUser } from "@/redux/users/operations";
+import { selectIsLoading } from "@/redux/contacts/contactsSelectors";
+import { fetchCreateContact } from "@/redux/contacts/contactsOperations";
 import baseFormStyles from "../styles/Form.module.css";
 
 const phoneRegex = /^[+]?[(]?[0-9]{3}[)]?[-\s.]?[0-9]{3}[-\s.]?[0-9]{4,6}$/;
@@ -17,7 +17,7 @@ const addUserSchema = Yup.object().shape({
     .required("Phone required"),
 });
 
-export const CreateUserForm = () => {
+export const CreateContactForm = () => {
   const dispatch = useDispatch();
   const isLoading = useSelector(selectIsLoading);
 
@@ -27,7 +27,7 @@ export const CreateUserForm = () => {
       return;
     }
 
-    dispatch(fetchCreateUser(values));
+    dispatch(fetchCreateContact(values));
     resetForm();
   };
 

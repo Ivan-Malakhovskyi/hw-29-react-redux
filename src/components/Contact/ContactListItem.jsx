@@ -1,10 +1,13 @@
 import { useDispatch } from "react-redux";
-import { fetchDeleteUser, fetchToggleStatus } from "@/redux/users/operations";
+import {
+  fetchDeleteContact,
+  fetchToggleStatus,
+} from "@/redux/contacts/contactsOperations";
 import baseFormStyles from "../styles/Form.module.css";
 
-export const UserListItem = ({ user }) => {
+export const ContactListItem = ({ user }) => {
   const dispatch = useDispatch();
-  const handleDelete = () => dispatch(fetchDeleteUser(user.id));
+  const handleDelete = () => dispatch(fetchDeleteContact(user.id));
   const handleToggle = () => dispatch(fetchToggleStatus(user));
 
   return (

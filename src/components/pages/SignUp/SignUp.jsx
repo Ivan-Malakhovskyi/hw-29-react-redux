@@ -1,5 +1,3 @@
-import React from "react";
+import { SignUpUser } from "@/components/SignUpUser";
 
-export const SignUp = () => {
-  return <div>SignUp</div>;
-};
+export const SignUp = () => <SignUpUser />;

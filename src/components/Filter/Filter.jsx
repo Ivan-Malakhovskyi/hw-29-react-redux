@@ -1,6 +1,6 @@
 import { useDispatch, useSelector } from "react-redux";
-import { selectFilters } from "@/redux/users/selectors";
-import { changeValueFilter } from "@/redux/users/filtersSlice";
+import { selectFilters } from "@/redux/contacts/contactsSelectors";
+import { changeValueFilter } from "@/redux/contacts/filtersSlice";
 import baseFormStyles from "../styles/Form.module.css";
 import filterStyles from "./Filter.module.css";
 

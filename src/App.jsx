@@ -1,11 +1,11 @@
-import { User } from "./components/User";
-import { UsersSection } from "./components/UsersSection";
+import { Contact } from "./components/Contact/Contact";
+import { ContactSection } from "./components/ContactSection";
 
 export const App = () => {
   return (
     <div className="container">
-      <User />
-      <UsersSection />
+      <Contact />
+      <ContactSection />
     </div>
   );
 };

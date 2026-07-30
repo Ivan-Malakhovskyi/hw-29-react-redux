@@ -1,5 +1,3 @@
-import React from "react";
+import { SignInUser } from "@/components/SignInUser";
 
-export const SignIn = () => {
-  return <div>SignIn</div>;
-};
+export const SignIn = () => <SignInUser />;

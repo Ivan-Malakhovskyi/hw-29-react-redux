@@ -1,5 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { fetchCreateUser } from "../users/operations";
+import { fetchContacts } from "../contacts/contactsOperations";
+import { addGenericMatcher } from "../genericMatcher";
 
 const initialState = {
   user: { name: null, email: null },
@@ -14,11 +15,12 @@ const authSlice = createSlice({
   name: "auth",
   initialState,
   extraReducers: (builder) => {
-    builder.addCase(fetchCreateUser.fulfilled, (state, action) => {
+    builder.addCase(fetchContacts.fulfilled, (state, action) => {
       state.user = action.payload;
       state.isLoggedIn = true;
       state.token = action.payload.token;
     });
+    addGenericMatcher(builder);
   },
 });
 

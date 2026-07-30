@@ -9,13 +9,13 @@ import {
   persistStore,
 } from "redux-persist";
 
-import { persistedUsersReducer } from "./users/usersSlice";
-import { filterReducer } from "./users/filtersSlice";
+import { persistedUsersReducer } from "./contacts/contactsSlice";
+import { filterReducer } from "./contacts/filtersSlice";
 import { authReducer } from "./auth/authSlice";
 
 export const store = configureStore({
   reducer: {
-    users: persistedUsersReducer,
+    contacts: persistedUsersReducer,
     filters: filterReducer,
     auth: authReducer,
   },

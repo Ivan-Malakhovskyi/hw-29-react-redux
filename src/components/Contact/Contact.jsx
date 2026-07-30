@@ -1,23 +1,23 @@
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchUsers } from "@/redux/users/operations";
-import { selectIsError } from "@/redux/users/selectors";
-import { CreateUserForm } from "./CreateUserForm";
+import { fetchContacts } from "@/redux/contacts/contactsOperations";
+import { selectIsError } from "@/redux/contacts/contactsSelectors";
+import { CreateContactForm } from "./CreateContactForm";
 
-export const User = () => {
+export const Contact = () => {
   const dispatch = useDispatch();
 
   const isError = useSelector(selectIsError);
 
   useEffect(() => {
-    dispatch(fetchUsers());
+    dispatch(fetchContacts());
   }, [dispatch]);
 
   return (
     <section>
       <h1>Users App </h1>
 
-      <CreateUserForm />
+      <CreateContactForm />
 
       {isError && <h2>ooops 😢</h2>}
     </section>
