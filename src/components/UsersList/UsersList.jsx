@@ -1,6 +1,10 @@
 import { useSelector } from "react-redux";
-import { selectIsLoading, selectIsError } from "@/redux/users/selectors";
-import { selectVisibleAdapterUsers } from "@/redux/users/usersSlice";
+import { Link } from "react-router";
+import {
+  selectIsLoading,
+  selectIsError,
+  selectVisibleAdapterUsers,
+} from "@/redux/users/selectors";
 import { UserListItem } from "../User";
 import { Spinner } from "../shared/Spinner";
 import styles from "./UserList.module.css";
@@ -19,7 +23,9 @@ export const UsersList = () => {
       ) : (
         <ul className={styles.users_list}>
           {users.map((user) => (
-            <UserListItem key={user.id} user={user} />
+            <Link key={user.id} to={`/users/${user.id}`}>
+              <UserListItem key={user.id} user={user} />
+            </Link>
           ))}
         </ul>
       )}

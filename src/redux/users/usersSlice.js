@@ -1,8 +1,4 @@
-import {
-  createEntityAdapter,
-  createSelector,
-  createSlice,
-} from "@reduxjs/toolkit";
+import { createEntityAdapter, createSlice } from "@reduxjs/toolkit";
 import { persistReducer } from "redux-persist";
 import storage from "redux-persist/es/storage";
 
@@ -10,15 +6,13 @@ import {
   fetchCreateUser,
   fetchDeleteUser,
   fetchToggleStatus,
+  fetchUserById,
   fetchUsers,
 } from "./operations";
 
 import { addGenericMatcher } from "../genericMatcher";
-import { selectFilters } from "./selectors";
 
-//! !id => selectId =(state) => state.bookID
-
-const usersAdapter = createEntityAdapter({
+export const usersAdapter = createEntityAdapter({
   sortComparer: (a, b) => a.name.localeCompare(b.name),
 });
 
@@ -41,25 +35,14 @@ const usersSlice = createSlice({
       })
       .addCase(fetchToggleStatus.fulfilled, (state, action) => {
         usersAdapter.upsertOne(state, action.payload);
+      })
+      .addCase(fetchUserById.fulfilled, (state, action) => {
+        console.log(action.payload);
+        usersAdapter.setOne(state, action.payload);
       });
     addGenericMatcher(builder);
   },
 });
-
-export const { selectAll: selectAllUsers, selectById: selectUserById } =
-  usersAdapter.getSelectors((state) => state.users);
-
-export const selectVisibleAdapterUsers = createSelector(
-  [selectAllUsers, selectFilters],
-  (users, filters) => {
-    return {
-      users: users.filter((user) =>
-        user.name.toLowerCase().includes(filters.toLowerCase()),
-      ),
-      filters,
-    };
-  },
-);
 
 const config = {
   key: "users",

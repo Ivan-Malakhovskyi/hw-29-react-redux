@@ -37,8 +37,8 @@ button,
 input,
 textarea,
 select {
-    border: none;
-    outline: none;
+    /* border: none; */
+    /* outline: none; */
     background: none;
 }
 

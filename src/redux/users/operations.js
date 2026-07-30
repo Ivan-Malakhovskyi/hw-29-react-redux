@@ -23,6 +23,17 @@ export const fetchCreateUser = createAsyncThunk(
   },
 );
 
+export const fetchUserById = createAsyncThunk(
+  "users/fetchUserById",
+  async (id, { rejectWithValue }) => {
+    try {
+      return await usersAPI.getUserById(id);
+    } catch (error) {
+      rejectWithValue(error);
+    }
+  },
+);
+
 export const fetchDeleteUser = createAsyncThunk(
   "users/fetchDeleteUser",
   async (id, { rejectWithValue }) => {
