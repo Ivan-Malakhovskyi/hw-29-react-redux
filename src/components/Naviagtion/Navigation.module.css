@@ -7,3 +7,14 @@
     }
 
 }
+
+.wrapper {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.active {
+    color: var(--color-primary);
+    font-weight: 600;
+}

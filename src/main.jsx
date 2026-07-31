@@ -7,9 +7,7 @@ import { PersistGate } from "redux-persist/es/integration/react";
 import { BrowserRouter } from "react-router";
 import { persistor, store } from "./redux/store.js";
 import { Spinner } from "./components/shared/Spinner.jsx";
-import { setToken } from "./services/authService.js";
 
-setToken(store);
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <BrowserRouter>

@@ -1,17 +1,5 @@
 import { apiClient } from "./apiClient";
 
-export const setToken = (store) => {
-  apiClient.interceptors.request.use((config) => {
-    console.log(config);
-    const accessToken = store.getState().auth.token;
-    console.log(accessToken);
-    if (accessToken) {
-      config.headers.Authorization = `Bearer ${accessToken}`;
-    }
-    return config;
-  });
-};
-
 export const signUp = async (userData) => {
   const { data } = await apiClient.post("/users/signup", userData);
 
@@ -24,8 +12,8 @@ export const signIn = async (userData) => {
   return data;
 };
 
-export const signOut = async (userData) => {
-  const { data } = await apiClient.post("/users/logout", userData);
+export const signOut = async () => {
+  const { data } = await apiClient.post("/users/logout");
 
   return data;
 };

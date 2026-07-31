@@ -17,11 +17,3 @@ export const deleteContactById = async (id) => {
 
   return data;
 };
-
-export const toggleStatus = async (id, user) => {
-  const { data } = await apiClient.put(`/contacts/${id}`, {
-    status: !user.status,
-  });
-
-  return data;
-};

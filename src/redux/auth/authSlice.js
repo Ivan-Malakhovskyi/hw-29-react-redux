@@ -1,6 +1,8 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { fetchContacts } from "../contacts/contactsOperations";
+import storage from "redux-persist/es/storage";
+import { persistReducer } from "redux-persist";
 import { addGenericMatcher } from "../genericMatcher";
+import { fetchSignupUser } from "./authOperations";
 
 const initialState = {
   user: { name: null, email: null },
@@ -15,13 +17,18 @@ const authSlice = createSlice({
   name: "auth",
   initialState,
   extraReducers: (builder) => {
-    builder.addCase(fetchContacts.fulfilled, (state, action) => {
-      state.user = action.payload;
-      state.isLoggedIn = true;
-      state.token = action.payload.token;
+    builder.addCase(fetchSignupUser.fulfilled, (state, action) => {
+      const data = action.payload;
     });
+
     addGenericMatcher(builder);
   },
 });
 
-export const authReducer = authSlice.reducer;
+const config = {
+  key: "auth",
+  storage,
+  whitelist: ["token"],
+};
+
+export const authPersistedReducer = persistReducer(config, authSlice.reducer);

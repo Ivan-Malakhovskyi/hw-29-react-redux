@@ -4,7 +4,7 @@ import {
   selectIsError,
 } from "@/redux/contacts/contactsSelectors";
 import { selectVisibleAdapterUsers } from "@/redux/contacts/contactsSlice";
-import { ContactListItem } from "../Contact";
+import { ContactListItem } from "../Contacts";
 import { Spinner } from "../shared/Spinner";
 import styles from "./ContactList.module.css";
 
@@ -22,8 +22,8 @@ export const ContactsList = () => {
       ) : (
         !isContactsEmpty && (
           <ul className={styles.users_list}>
-            {contacts.map((user) => (
-              <ContactListItem key={user.id} user={user} />
+            {contacts.map((contact) => (
+              <ContactListItem key={contact.id} contact={contact} />
             ))}
           </ul>
         )

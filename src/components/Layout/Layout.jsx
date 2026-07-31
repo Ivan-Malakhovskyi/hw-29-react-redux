@@ -7,7 +7,7 @@ import { Navigation } from "../Naviagtion";
 
 export const Layout = () => {
   return (
-    <div>
+    <div className="container">
       <header className={styles.header}>
         <Link to="/">
           <RiReactjsFill size={40} />

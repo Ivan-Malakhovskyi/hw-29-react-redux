@@ -12,7 +12,7 @@ const addUserSchema = Yup.object().shape({
     .min(2, "Too Short!")
     .max(70, "Too Long!")
     .required("Required"),
-  phone: Yup.string()
+  number: Yup.string()
     .matches(phoneRegex, "Invalid format")
     .required("Phone required"),
 });
@@ -35,9 +35,7 @@ export const CreateContactForm = () => {
     <Formik
       initialValues={{
         name: "",
-        phone: "",
-        gender: "man",
-        status: false,
+        number: "",
       }}
       onSubmit={handleSubmit}
       validationSchema={addUserSchema}
@@ -54,30 +52,13 @@ export const CreateContactForm = () => {
             component="div"
           />
         </label>
-        <label htmlFor="phone" className={baseFormStyles.label}>
-          Phone
-          <Field name="phone" type="tel" className={baseFormStyles.input} />
+        <label htmlFor="number" className={baseFormStyles.label}>
+          Number
+          <Field name="number" type="tel" className={baseFormStyles.input} />
           <ErrorMessage
             className={baseFormStyles.error}
-            name="phone"
+            name="number"
             component="div"
-          />
-        </label>
-
-        <label htmlFor="gender" className={baseFormStyles.label}>
-          Gender
-          <Field as="select" name="gender" className={baseFormStyles.input}>
-            <option value="man">Man</option>
-            <option value="woman">Woman</option>
-          </Field>
-        </label>
-
-        <label htmlFor="status" className={baseFormStyles.label}>
-          Status
-          <input
-            type="checkbox"
-            name="status"
-            className={baseFormStyles.input}
           />
         </label>
 

@@ -10,13 +10,10 @@ import {
   fetchContacts,
   fetchCreateContact,
   fetchDeleteContact,
-  fetchToggleStatus,
 } from "./contactsOperations";
 
 import { addGenericMatcher } from "../genericMatcher";
 import { selectFilters } from "./contactsSelectors";
-
-//! !id => selectId =(state) => state.bookID
 
 const usersAdapter = createEntityAdapter({
   sortComparer: (a, b) => a.name.localeCompare(b.name),
@@ -38,10 +35,8 @@ const usersSlice = createSlice({
       })
       .addCase(fetchDeleteContact.fulfilled, (state, action) => {
         usersAdapter.removeOne(state, action.payload.id);
-      })
-      .addCase(fetchToggleStatus.fulfilled, (state, action) => {
-        usersAdapter.upsertOne(state, action.payload);
       });
+
     addGenericMatcher(builder);
   },
 });

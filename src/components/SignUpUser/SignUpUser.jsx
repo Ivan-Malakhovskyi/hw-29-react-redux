@@ -1,19 +1,21 @@
-import { fetchSignupUser } from "@/redux/auth/authOperations";
 import { Field, Formik, Form, ErrorMessage } from "formik";
-import { useDispatch } from "react-redux";
-import { Link, useNavigate } from "react-router";
+import { Link } from "react-router";
+import * as Yup from "yup";
+import { emailRegex } from "@/validationRegex";
 import styles from "../styles/Form.module.css";
 import sectionStyles from "../styles/Section.module.css";
 
+const signupUserSchema = Yup.object().shape({
+  name: Yup.string()
+    .min(1, "Too short")
+    .max(40, "Too long")
+    .required("Required"),
+  email: Yup.string().matches(emailRegex, "Invalid email").required("Required"),
+  password: Yup.string().min(6, "Too short").max(20, "Too long").required(),
+});
+
 export const SignUpUser = () => {
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-  const handleSubmit = (values, { resetForm }) => {
-    console.log(values);
-    dispatch(fetchSignupUser(values));
-    // navigate("/signin");
-    resetForm();
-  };
+  const handleSubmit = (values, { resetForm }) => {};
 
   return (
     <section className={sectionStyles.section}>
@@ -24,6 +26,7 @@ export const SignUpUser = () => {
           password: "",
         }}
         onSubmit={handleSubmit}
+        validationSchema={signupUserSchema}
       >
         <Form autoComplete="false" className={styles.form}>
           <label htmlFor="name" className={styles.label}>

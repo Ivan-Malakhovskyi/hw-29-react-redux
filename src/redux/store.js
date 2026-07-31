@@ -11,12 +11,12 @@ import {
 
 import { persistedUsersReducer } from "./contacts/contactsSlice";
 import { filterReducer } from "./contacts/filtersSlice";
-import { authReducer } from "./auth/authSlice";
+import { authPersistedReducer } from "./auth/authSlice";
 
 export const store = configureStore({
   reducer: {
     contacts: persistedUsersReducer,
-    auth: authReducer,
+    auth: authPersistedReducer,
     filters: filterReducer,
   },
   middleware: (getDefaultMiddleware) =>
