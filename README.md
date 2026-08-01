@@ -1,3 +1,45 @@
+1. Portals
+
+-create div#portal-root
+
+2. createPortal(jsx, rootPortal)
+
+3. createPortal рендерить модалку в окремий DOM-вузол поза деревом #root. Це рятує від проблем з z-index та overflow: hidden на батьківських контейнерах — класична біда, коли модалка "ріжеться" якимось overflow: hidden на three levels up.
+
+```js
+import styles from "./components/Modal/Modal.module.css";
+
+  const handleToggleWith = () => {
+    setWithPortal(!withPortal);
+  };
+
+  const handleToggleWithout = () => {
+    setWithoutPortal(!withoutPortal);
+  };
+      <div className={styles["kill-container"]}>
+        {" "}
+        <button type="button" onClick={handleToggleWithout}>
+          Open without
+        </button>
+        <WithoutPortal
+          isOpen={withoutPortal}
+          handleToggle={handleToggleWithout}
+        />
+      </div>
+
+      <div className={styles["kill-container"]}>
+        <button type="button" onClick={handleToggleWith}>
+          Open with
+        </button>
+
+        <WithPortal isOpen={withPortal} handleToggle={handleToggleWith} />
+      </div>
+```
+
+https://api.escuelajs.co/docs#/
+
+https://fakeapi.platzi.com/en/rest/users/
+
 ```js
 export const register = createAsyncThunk(
   "auth/register",
