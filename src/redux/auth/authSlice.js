@@ -1,25 +1,29 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { fetchCreateUser } from "../users/operations";
+import { addGenericMatcher } from "../genericMatcher";
 
 const initialState = {
   user: { name: null, email: null },
   token: null,
   isLoggedIn: false,
-  isRefresh: false,
-  isLoading: false,
-  isError: null,
+  isRefreshing: false,
 };
 
 const authSlice = createSlice({
   name: "auth",
   initialState,
+  reducers: {
+    logOut(state) {
+      state.isLoggedIn = false;
+      state.user = { name: null, email: null };
+      state.token = null;
+    },
+  },
   extraReducers: (builder) => {
-    builder.addCase(fetchCreateUser.fulfilled, (state, action) => {
-      state.user = action.payload;
-      state.isLoggedIn = true;
-      state.token = action.payload.token;
-    });
+    builder;
+
+    addGenericMatcher(builder);
   },
 });
 
+export const { logOut } = authSlice.actions;
 export const authReducer = authSlice.reducer;

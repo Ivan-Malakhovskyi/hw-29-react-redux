@@ -1,25 +1,16 @@
-import { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { fetchUsers } from "@/redux/users/operations";
-import { selectIsError } from "@/redux/users/selectors";
-import { CreateUserForm } from "./CreateUserForm";
+import css from "./User.module.css";
 
-export const User = () => {
-  const dispatch = useDispatch();
-
-  const isError = useSelector(selectIsError);
-
-  useEffect(() => {
-    dispatch(fetchUsers());
-  }, [dispatch]);
-
+export const User = ({ id, name, email, avatar, role }) => {
   return (
-    <section>
-      <h1>Users App </h1>
-
-      <CreateUserForm />
-
-      {isError && <h2>ooops 😢</h2>}
-    </section>
+    <div className={css.wrapper}>
+      <p className={css.text}>
+        Username: <b>{name}</b>
+      </p>
+      <p className={css.text}>
+        User email: <b>{email}</b>
+      </p>
+      <img src={avatar} alt={name} width={200} height={200} />
+      Role <b>{role}</b>
+    </div>
   );
 };
