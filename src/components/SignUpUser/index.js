@@ -1,1 +1,0 @@
-export { SignUpUser } from "./SignUpUser";
