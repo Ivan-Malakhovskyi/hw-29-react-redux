@@ -1,7 +1,10 @@
+import { createPortal } from "react-dom";
 import Modal from ".";
 
 export const WithPortal = ({ isOpen, handleToggle }) => {
-  return (
+  const portalRoot = document.getElementById("portal-root");
+
+  return createPortal(
     <Modal isOpen={isOpen} onClose={handleToggle} title="FKFKkf">
       <h3>title Modal</h3>
       <p>
@@ -11,6 +14,7 @@ export const WithPortal = ({ isOpen, handleToggle }) => {
       <button type="button" onClick={handleToggle}>
         Close
       </button>
-    </Modal>
+    </Modal>,
+    portalRoot,
   );
 };
