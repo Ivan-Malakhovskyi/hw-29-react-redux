@@ -1,12 +1,14 @@
+import { apiClient } from "@/apiClient";
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import * as authAPI from "@/services/authService";
-import { apiClient } from "@/services/apiClient";
+import * as authAPI from "@/services/auth-service";
 
-const setToken = (token) => {
+// Utility to add JWT
+const setAuthHeader = (token) => {
   apiClient.defaults.headers.common.Authorization = `Bearer ${token}`;
 };
 
-const unsetToken = () => {
+// Utility to remove JWT
+export const clearAuthHeader = () => {
   apiClient.defaults.headers.common.Authorization = "";
 };
 
@@ -15,7 +17,7 @@ export const fetchSignupUser = createAsyncThunk(
   async (userData, { rejectWithValue }) => {
     try {
       const resp = await authAPI.signUp(userData);
-      setToken(resp.token);
+      setAuthHeader(resp.token);
       return resp;
     } catch (error) {
       return rejectWithValue(error);
@@ -28,7 +30,7 @@ export const fetchSigninUser = createAsyncThunk(
   async (userData, { rejectWithValue }) => {
     try {
       const resp = await authAPI.signIn(userData);
-      setToken(resp.token);
+      setAuthHeader(resp.token);
       return resp;
     } catch (error) {
       return rejectWithValue(error);
@@ -41,7 +43,7 @@ export const fetchSignOutUser = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       const resp = await authAPI.signOut();
-      unsetToken();
+      clearAuthHeader();
       return resp;
     } catch (error) {
       return rejectWithValue(error);
@@ -58,7 +60,7 @@ export const fetchRefreshUer = createAsyncThunk(
       if (!token) {
         return rejectWithValue("Unable fetch user");
       }
-      setToken(token);
+      setAuthHeader(token);
 
       return await authAPI.getCurrent();
     } catch (error) {
