@@ -1,15 +1,26 @@
+import { NavLink } from "react-router";
+import { useDispatch } from "react-redux";
+import { useAuthUser } from "../hooks/useAuthUser";
 import styles from "./AppBar.module.css";
-import { UserMenu } from "../UserMenu/UserMenu";
-import { AuthNav } from "../AuthNav/AuthNav";
-import { useAuth } from "@/hooks";
+import { fetchSignOutUser } from "@/redux/auth/authOperations";
 
 export const AppBar = () => {
-  const { isLoggedIn } = useAuth();
+  const dispatch = useDispatch();
+  const { user } = useAuthUser();
+
+  const handleSignOut = () => {
+    dispatch(fetchSignOutUser());
+  };
 
   return (
-    <header className={styles.header}>
-      <Navigation />
-      {isLoggedIn ? <UserMenu /> : <AuthNav />}
-    </header>
+    <>
+      <NavLink to="/contacts">Contacts</NavLink>
+      <p>
+        Welcome <b>{user.name || "user"}</b>{" "}
+      </p>
+      <button type="button" onClick={handleSignOut} className={styles.button}>
+        SignOut
+      </button>
+    </>
   );
 };
