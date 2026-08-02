@@ -15,7 +15,6 @@ export const fetchSignupUser = createAsyncThunk(
   async (userData, { rejectWithValue }) => {
     try {
       const resp = await authAPI.signUp(userData);
-      console.log(resp);
       setToken(resp.token);
       return resp;
     } catch (error) {
@@ -55,7 +54,6 @@ export const fetchRefreshUer = createAsyncThunk(
   async (_, { rejectWithValue, getState }) => {
     try {
       const token = getState().auth.token;
-      console.log(token);
 
       if (!token) {
         return rejectWithValue("Unable fetch user");

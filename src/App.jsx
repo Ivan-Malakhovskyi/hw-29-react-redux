@@ -1,17 +1,19 @@
 import { Route, Routes } from "react-router";
+import { lazy, useEffect } from "react";
+import { useDispatch } from "react-redux";
+
 import { Layout } from "./components/Layout";
-import { Contacts } from "./components/Contacts";
-import { HomePage } from "./components/pages/HomePage";
-import { SignInPage } from "./components/pages/SignInPage";
-import { SignUpPage } from "./components/pages/SignUpPage";
-import { NotFoundPage } from "./components/pages/NotFoundPage";
 import { useAuthUser } from "./components/hooks/useAuthUser";
 import { Spinner } from "./components/shared/Spinner";
-import { useEffect } from "react";
-import { useDispatch } from "react-redux";
 import { fetchRefreshUer } from "./redux/auth/authOperations";
 import { RestrictedRoute } from "./components/RestrictedRoute";
 import { PrivateRoute } from "./components/PrivateRoute";
+
+const HomePage = lazy(() => import("./components/pages/HomePage"));
+const SignInPage = lazy(() => import("./components/pages/SignInPage"));
+const SignUpPage = lazy(() => import("./components/pages/SignUpPage"));
+const ContactsPage = lazy(() => import("./components/pages/ContactsPage"));
+const NotFoundPage = lazy(() => import("./components/pages/NotFoundPage"));
 
 export const App = () => {
   const { isRefresh } = useAuthUser();
@@ -50,7 +52,10 @@ export const App = () => {
             <Route
               path="contacts"
               element={
-                <PrivateRoute navigateTo="/signin" component={<Contacts />} />
+                <PrivateRoute
+                  navigateTo="/signin"
+                  component={<ContactsPage />}
+                />
               }
             />
             <Route path="*" element={<NotFoundPage />} />

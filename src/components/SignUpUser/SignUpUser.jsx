@@ -2,10 +2,10 @@ import { Field, Formik, Form, ErrorMessage } from "formik";
 import { Link } from "react-router";
 import * as Yup from "yup";
 import { emailRegex } from "@/validationRegex";
-import styles from "../styles/Form.module.css";
-import sectionStyles from "../styles/Section.module.css";
 import { useDispatch } from "react-redux";
 import { fetchSignupUser } from "@/redux/auth/authOperations";
+import styles from "../styles/Form.module.css";
+import sectionStyles from "../styles/Section.module.css";
 
 const signupUserSchema = Yup.object().shape({
   name: Yup.string()
@@ -16,11 +16,11 @@ const signupUserSchema = Yup.object().shape({
   password: Yup.string().min(6, "Too short").max(20, "Too long").required(),
 });
 
-export const SignUpUser = () => {
+const SignUpUser = () => {
   const dispatch = useDispatch();
   const handleSubmit = (values, { resetForm }) => {
     dispatch(fetchSignupUser(values));
-    // resetForm()
+    resetForm();
   };
 
   return (
@@ -63,3 +63,5 @@ export const SignUpUser = () => {
     </section>
   );
 };
+
+export default SignUpUser;

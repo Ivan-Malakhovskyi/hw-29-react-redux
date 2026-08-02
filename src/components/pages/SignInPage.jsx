@@ -1,3 +1,5 @@
-import { SignInUser } from "../SignInUser";
+import SignInUser from "../SignInUser";
 
-export const SignInPage = () => <SignInUser />;
+const SignInPage = () => <SignInUser />;
+
+export default SignInPage;

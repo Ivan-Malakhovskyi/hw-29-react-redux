@@ -1,3 +1,3 @@
 export { CreateContactForm } from "./CreateContactForm";
-export { Contacts } from "./Contacts";
+export { default } from "./Contacts";
 export { ContactListItem } from "./ContactsListItem";

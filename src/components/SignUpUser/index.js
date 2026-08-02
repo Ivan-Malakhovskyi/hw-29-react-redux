@@ -1,1 +1,1 @@
-export { SignUpUser } from "./SignUpUser";
+export { default } from "./SignUpUser";

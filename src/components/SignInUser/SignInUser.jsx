@@ -1,18 +1,18 @@
 import { Field, Formik, Form, ErrorMessage } from "formik";
 import { useDispatch } from "react-redux";
 import { Link } from "react-router";
-import styles from "../styles/Form.module.css";
-import sectionStyles from "../styles/Section.module.css";
 import * as Yup from "yup";
 import { emailRegex } from "@/validationRegex";
 import { fetchSigninUser } from "@/redux/auth/authOperations";
+import sectionStyles from "../styles/Section.module.css";
+import styles from "../styles/Form.module.css";
 
 const signinUserSchema = Yup.object().shape({
   email: Yup.string().matches(emailRegex, "Invalid email").required("Required"),
   password: Yup.string().min(6, "Too short").max(20, "Too long").required(),
 });
 
-export const SignInUser = () => {
+const SignInUser = () => {
   const dispatch = useDispatch();
   const handleSubmit = (values, { resetForm }) => {
     dispatch(fetchSigninUser(values));
@@ -52,3 +52,5 @@ export const SignInUser = () => {
     </section>
   );
 };
+
+export default SignInUser;
