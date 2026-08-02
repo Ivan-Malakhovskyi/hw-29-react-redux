@@ -2,7 +2,12 @@ import { createSlice } from "@reduxjs/toolkit";
 import storage from "redux-persist/es/storage";
 import { persistReducer } from "redux-persist";
 import { addGenericMatcher } from "../genericMatcher";
-import { fetchSignupUser } from "./authOperations";
+import {
+  fetchRefreshUer,
+  fetchSigninUser,
+  fetchSignOutUser,
+  fetchSignupUser,
+} from "./authOperations";
 
 const initialState = {
   user: { name: null, email: null },
@@ -17,9 +22,28 @@ const authSlice = createSlice({
   name: "auth",
   initialState,
   extraReducers: (builder) => {
-    builder.addCase(fetchSignupUser.fulfilled, (state, action) => {
-      const data = action.payload;
-    });
+    builder
+      .addCase(fetchSignupUser.fulfilled, (state, action) => {
+        const data = action.payload;
+        state.user = data.user;
+        state.isLoggedIn = true;
+        state.token = data.token;
+      })
+      .addCase(fetchSigninUser.fulfilled, (state, action) => {
+        const data = action.payload;
+        state.user = data.user;
+        state.token = data.token;
+        state.isLoggedIn = true;
+      })
+      .addCase(fetchSignOutUser.fulfilled, (state, action) => {
+        state.user = { name: null, email: null };
+        state.token = "";
+        state.isLoggedIn = false;
+      })
+      .addCase(fetchRefreshUer.fulfilled, (state, action) => {
+        state.user = action.payload;
+        state.isLoggedIn = true;
+      });
 
     addGenericMatcher(builder);
   },

@@ -5,6 +5,7 @@ import styles from "../styles/Form.module.css";
 import sectionStyles from "../styles/Section.module.css";
 import * as Yup from "yup";
 import { emailRegex } from "@/validationRegex";
+import { fetchSigninUser } from "@/redux/auth/authOperations";
 
 const signinUserSchema = Yup.object().shape({
   email: Yup.string().matches(emailRegex, "Invalid email").required("Required"),
@@ -14,6 +15,7 @@ const signinUserSchema = Yup.object().shape({
 export const SignInUser = () => {
   const dispatch = useDispatch();
   const handleSubmit = (values, { resetForm }) => {
+    dispatch(fetchSigninUser(values));
     resetForm();
   };
 

@@ -2,12 +2,15 @@ import { NavLink } from "react-router";
 import { useDispatch } from "react-redux";
 import { useAuthUser } from "../hooks/useAuthUser";
 import styles from "./AppBar.module.css";
+import { fetchSignOutUser } from "@/redux/auth/authOperations";
 
 export const AppBar = () => {
   const dispatch = useDispatch();
   const { user } = useAuthUser();
 
-  const handleSignOut = () => {};
+  const handleSignOut = () => {
+    dispatch(fetchSignOutUser());
+  };
 
   return (
     <>

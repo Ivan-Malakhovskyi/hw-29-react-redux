@@ -4,6 +4,8 @@ import * as Yup from "yup";
 import { emailRegex } from "@/validationRegex";
 import styles from "../styles/Form.module.css";
 import sectionStyles from "../styles/Section.module.css";
+import { useDispatch } from "react-redux";
+import { fetchSignupUser } from "@/redux/auth/authOperations";
 
 const signupUserSchema = Yup.object().shape({
   name: Yup.string()
@@ -15,7 +17,11 @@ const signupUserSchema = Yup.object().shape({
 });
 
 export const SignUpUser = () => {
-  const handleSubmit = (values, { resetForm }) => {};
+  const dispatch = useDispatch();
+  const handleSubmit = (values, { resetForm }) => {
+    dispatch(fetchSignupUser(values));
+    // resetForm()
+  };
 
   return (
     <section className={sectionStyles.section}>
@@ -41,7 +47,7 @@ export const SignUpUser = () => {
           </label>
           <label htmlFor="password" className={styles.label}>
             Password
-            <Field name="password" className={styles.input} />
+            <Field name="password" className={styles.input} type="password" />
             <ErrorMessage
               name="password"
               component="p"
