@@ -1,8 +1,8 @@
 import { Navigate } from "react-router";
-import { useAuth } from "@/hooks";
+import { useAuthUser } from "./hooks/useAuthUser";
 
-export const RestrictedRoute = ({ component: Component, redirectTo = "/" }) => {
-  const { isLoggedIn } = useAuth();
+export const RestrictedRoute = ({ component, navigateTo = "/" }) => {
+  const { isLoggedIn } = useAuthUser();
 
-  return isLoggedIn ? <Navigate to={redirectTo} /> : Component;
+  return isLoggedIn ? <Navigate to={navigateTo} /> : component;
 };

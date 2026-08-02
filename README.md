@@ -1,129 +1,332 @@
-1. Portals
+    ОСНОВНІ ЗАВДАННЯ УРОКУ:
 
--create div#portal-root
+    1. Познайомитись з створенням облікових записів.
 
-2. createPortal(jsx, rootPortal)
+    2. Розглянути як додавати права доступу.
 
-3. createPortal рендерить модалку в окремий DOM-вузол поза деревом #root. Це рятує від проблем з z-index та overflow: hidden на батьківських контейнерах — класична біда, коли модалка "ріжеться" якимось overflow: hidden на three levels up.
+    3. Дізнатись що таке JSON Web Token.
 
-```js
-import styles from "./components/Modal/Modal.module.css";
+1. Показати на дошці Excalidraw про те, що різним користувачам, потірбні різні дані з бд. Для цього дати аналогію з пропускоим на роботу, тобто унікальний id(номер). Було б не вірно, щоб користувач сам створював собі id і відправляв на сервер - незпечно, бо фронтенд не захищений. Джерелом правди завжди має бути бекенд. Тому потрібен механізм, який посилає дані на сервер в захищеному вигляді - один з них JWT. JWT - генерує бекенд
 
-  const handleToggleWith = () => {
-    setWithPortal(!withPortal);
-  };
+2. https://www.jwt.io/
 
-  const handleToggleWithout = () => {
-    setWithoutPortal(!withoutPortal);
-  };
-      <div className={styles["kill-container"]}>
-        {" "}
-        <button type="button" onClick={handleToggleWithout}>
-          Open without
-        </button>
-        <WithoutPortal
-          isOpen={withoutPortal}
-          handleToggle={handleToggleWithout}
-        />
-      </div>
+3. https://randomkeygen.com/
 
-      <div className={styles["kill-container"]}>
-        <button type="button" onClick={handleToggleWith}>
-          Open with
-        </button>
+FLOW
 
-        <WithPortal isOpen={withPortal} handleToggle={handleToggleWith} />
-      </div>
-```
+Register => backend checks validity => create jwt and add userinfo and response it jwt on frontend
+=> get it key and add to every next request in headers => backend get token and decode this token (decode can only backend, because backend know secret_key, that used while creating jwt), because if has secret can decode jwt with decode algorithm
+=> if token valid backend response data it is user - backend stateless - only req - res
 
-https://api.escuelajs.co/docs#/
+4. Розібрати проєкт + форму стану auth
 
-https://fakeapi.platzi.com/en/rest/users/
+КОЛИ БУДЕ ПРАКТИКА РОЗКАЗАТИ ПРО Swagger
+
+ВИДАЛИТИ ОБРОБНИКИ ВСІ DISPATCH
+
+5. SignUp
 
 ```js
-export const register = createAsyncThunk(
-  "auth/register",
-  async (userData, thunkAPI) => {
+
+const setToken = (token) => {
+  apiClient.defaults.headers.common.Authorization = `Bearer ${token}`;
+};
+
+const unsetToken = () => {
+  apiClient.defaults.headers.common.Authorization = "";
+};
+
+
+export const fetchSignupUser = createAsyncThunk(
+  "auth/fetchSignupUser",
+  async (userData, { rejectWithValue }) => {
     try {
-      return await authAPI.signUp(userData);
+      const resp = await authAPI.signUp(userData);
+      setToken(resp.token);
+      return resp;
     } catch (error) {
-      return thunkAPI.rejectWithValue(error.message);
+      return rejectWithValue(error);
     }
   },
 );
 
-    .addCase(register.fulfilled, (state, action) => {
-        const { name, email } = action.payload;
-        state.user = { email, name };
+
+      .addCase(fetchSignupUser.fulfilled, (state, action) => {
+        const data = action.payload;
+        state.user = data.user;
+        state.isLoggedIn = true;
+        state.token = data.token;
       })
 
-export const logIn = createAsyncThunk(
-  "auth/login",
-  async (credentials, thunkAPI) => {
-    try {
-      const res = await authAPI.signIn(credentials);
-      setAuthHeader(res.access_token);
-      const user = await authAPI.getCurrent();
+const handleSubmit = (values, { resetForm }) => {
+  console.log(values);
+  dispatch(fetchSignupUser(values));
+  // navigate("/signin");
+  // resetForm();
+};
+```
 
-      return { ...res, user };
+6. SignIn
+
+```js
+export const fetchSigninUser = createAsyncThunk(
+  "auth/fetchSigninUser",
+  async (userData, { rejectWithValue }) => {
+    try {
+      const resp = await authAPI.signIn(userData);
+      console.log(resp);
+      setToken(resp.token);
+      return resp;
     } catch (error) {
-      return thunkAPI.rejectWithValue(error.message);
+      return rejectWithValue(error);
     }
   },
 );
 
-      .addCase(logIn.fulfilled, (state, action) => {
-        const { name, email } = action.payload.user;
-
-        state.user = { name, email };
-        state.token = action.payload.access_token;
+      .addCase(fetchSigninUser.fulfilled, (state, action) => {
+        const data = action.payload;
+        state.user = data.user;
+        state.token = data.token;
         state.isLoggedIn = true;
       })
 
-export const refreshUser = createAsyncThunk(
-  "auth/refresh",
-  async (_, thunkAPI) => {
-    // Reading the token from the state via getState()
-    const state = thunkAPI.getState();
-    const persistedToken = state.auth.token;
+const handleSubmit = (values, { resetForm }) => {
+  console.log(values);
+  dispatch(fetchSigninUser(values));
+  // navigate('/contacts')
+  // resetForm();
+};
+```
 
-    if (!persistedToken) {
-      // If there is no token, exit without performing any request
-      return thunkAPI.rejectWithValue("Unable to fetch user");
-    }
+7. Signout
 
+```js
+export const fetchSignOutUser = createAsyncThunk(
+  "auth/fetchSignOutUser",
+  async (_, { rejectWithValue }) => {
     try {
-      // If there is a token, add it to the HTTP header and perform the request
-      setAuthHeader(persistedToken);
+      await authAPI.signOut();
+
+    } catch (error) {
+      return rejectWithValue(error);
+    }
+  },
+);
+
+      .addCase(fetchSignOutUser.fulfilled, (state) => {
+        state.user = { name: null, email: null };
+        state.isLoggedIn = false;
+        state.token = null;
+      })
+
+показати unsetToken(); після показу, що все працює
+```
+
+8. Залогінитись і перейти на contacts - показати bearer
+
+9. Після створення декількох тасок, розлогінитись і показати, що в кожного своя колекція
+
+10. Refresh
+
+Коли перезавантаження, користувач має зберегтися
+
+Refresh в App
+
+```js
+const { isRefresh } = useAuthUser();
+
+const dispatch = useDispatch();
+useEffect(() => {
+  dispatch(fetchCurrentUser());
+}, [dispatch]);
+
+{
+  isRefresh ? (
+    <Spinner />
+  ) : (
+    <Routes>
+      <Route path="/" element={<Layout />}>
+        <Route index element={<HomePage />} />
+        <Route path="signin" element={<SignInPage />} />
+        <Route path="signup" element={<SignUpPage />} />
+        <Route path="contacts" element={<Contacts />} />
+        <Route path="contacts:id" element={<ContactDetails />} />
+        <Route path="*" element={<NotFoundPage />} />
+      </Route>
+    </Routes>
+  );
+}
+```
+
+2 випадки
+
+1. Залогінились і перезавантажуємо, тобто токен є, і запишеться в стейт з LocaleStorage
+
+2. Коли не залогінені і перезавантажуємо, токена нема, отже треба перевірити чи є в нас токен в стані редакс
+
+```js
+<nav className={styles.nav}>
+  {isLoading && !isError ? (
+    <Spinner width={20} height={20} />
+  ) : (
+    <div className={styles.wrapper}>
+      <NavLink to="/">Home</NavLink>
+      {!isLoggedIn ? <AuthNav /> : <AppBar />}
+    </div>
+  )}
+</nav>
+```
+
+В createAsyncThunk можна отримати достпу до стану
+
+```js
+const { token } = getState().auth;
+console.log(token);
+export const fetchCurrentUser = createAsyncThunk(
+  "auth/fetchCurrentUser",
+  async (_, { rejectWithValue, getState }) => {
+    try {
+      const { token } = getState().auth;
+      console.log(token);
+
+      if (!token) {
+        return rejectWithValue("Invalid token");
+      }
+      setToken(token);
       return await authAPI.getCurrent();
     } catch (error) {
-      return thunkAPI.rejectWithValue(error.message);
+      return rejectWithValue(error);
     }
   },
 );
 
-      .addCase(refreshUser.fulfilled, (state, action) => {
-        console.log(action.payload);
+
+      .addCase(fetchCurrentUser.fulfilled, (state, action) => {
         state.user = action.payload;
         state.isLoggedIn = true;
-        state.isRefreshing = false;
       });
+```
+
+Коли токен є, то робимо запит
+
+Редірект
+
+Private && Restricted routes
+
+Тобто редіректи після дій
+
+Private - повинен спрацьовувати, коли ми не залогінені
+Restricted - маршрути, де залогіненому користувачу нема шо робити
+
+Як буде використовуватись?
+
+```js
+export const RestrictedRoute = ({ element: Component, navigateTo = "/" }) => {
+  const { isLoggedIn } = useAuthUser();
+  //   const navigate = useNavigate();
+
+  return isLoggedIn ? <Navigate to={navigateTo} /> : <Component />;
+};
+<RestrictedRoute element={<Singin>} to="/contacts"/>
 
 
+в App.jsx
+
+
+  <Route
+              path="signin"
+              element={
+                <RestrictedRoute
+                  element={<SignInPage />}
+                  navigateTo="/contacts"
+                />
+              }
+            />
+
+            <Route
+              path="signup"
+              element={
+                <RestrictedRoute
+                  element={<SignUpPage />}
+                  navigateTo="/contacts"
+                />
+              }
+            />
 ```
 
 ```js
-const dispatch = useDispatch();
-const { isRefreshing } = useAuth();
 
-useEffect(() => {
-  dispatch(refreshUser());
-}, [dispatch]);
+Перенеправляти, коли
+
+-не залогінений
+-рефреш закінчився, користувача немає
+
+Наприклад
+
+Користувач на /conacts
+Refresh
+Під час reload page він ще не залогінений і його викине з /contacts, тому потрібно впевнитися, що рефреш пройшов і там нема користувача і він не залогінений
+
+1. Юзер на /contacts, тисне F5
+2. Redux store перестворюється з нуля → isLoggedIn: false
+3. App.jsx монтується, диспатчить refreshUser() (запит іде на бекенд)
+4. PrivateRoute рендериться ОДРАЗУ, поки запит ще в польоті
+5. isLoggedIn === false → редірект на /login 🔴
+6. Через 200мс приходить відповідь refreshUser → isLoggedIn: true
+7. Юзер вже на /login, хоча насправді був залогінений
+
+import { Navigate } from "react-router";
+import { useAuthUser } from "./hooks/useAuthUser";
+
+export const PrivateRoute = ({ element, navigateTo = "/" }) => {
+  const { isLoggedIn, isRefresh } = useAuthUser();
+
+  const shouldRedirectUser = !isRefresh && !isLoggedIn;
+
+  return shouldRedirectUser ? <Navigate to={navigateTo} /> : element;
+};
+
+<Route
+  path="contacts"
+  element={<PrivateRoute element={<Contacts />} navigateTo="/signin" />}
+/>;
+```
+
+оптимізація
+
+lazy
+
+```js
+const HomePage = lazy(() => import("./components/pages/HomePage"));
 ```
 
 ```js
-const HomePage = lazy(() => import("./pages/Home"));
-const RegisterPage = lazy(() => import("./pages/Register"));
-const LoginPage = lazy(() => import("./pages/Login"));
-const UsersPage = lazy(() => import("./pages/Users"));
+
+
+Але спочатку ({ isActive }) => (isActive ? "active" : null);
+
+export const setActive = ({ isActive }) => (isActive ? "active" : null);
+
+import { setActive } from "@/utils/setActive";
+
+const routes = [
+  {
+    id: 1,
+    href: "signin",
+    text: "SignIn",
+  },
+  {
+    id: 2,
+    href: "signup",
+    text: "SignUp",
+  },
+];
+
+export const AuthNav = () => {
+  return routes.map(({ id, href, text }) => (
+    <NavLink key={id} to={href} className={setActive}>
+      {text}
+    </NavLink>
+  ));
+};
 ```
