@@ -7,7 +7,7 @@ import styles from "./Contacts.module.css";
 import { Filter } from "../Filter";
 import { ContactsList } from "../ContactsList";
 
-export const Contacts = () => {
+const Contacts = () => {
   const dispatch = useDispatch();
 
   const isError = useSelector(selectIsError);
@@ -30,3 +30,5 @@ export const Contacts = () => {
     </section>
   );
 };
+
+export default Contacts;
